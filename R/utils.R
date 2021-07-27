@@ -1,9 +1,9 @@
 
-#' Calculate sum of probabilities in log-space
+#' Calculate sum of probabilities in log-space.
 #'
-#' @param lp_vec
+#' @param lp_vec numeric vector
 #'
-#' @return
+#' @return numeric value
 #' @export
 #'
 #' @examples
