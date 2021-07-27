@@ -1,0 +1,4 @@
+TOL_0 <- 1E-10
+TOL_1 <- 1 - 1E-8
+RELTOL <- 1E-12
+MIN_START_PAR <- 1E-6
