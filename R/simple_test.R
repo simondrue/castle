@@ -35,8 +35,8 @@ get_start_values_abc <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_p
   # From a and c we find b
   b_start_vec <- -log(
     log(N_WT_only_vec / (N_WT_only_vec + N_d_pos_vec) *
-          exp(a_start + c_start * l_est_vec + l_est_vec) *
-          (1 - exp(-l_est_vec)) + 1) /
+      exp(a_start + c_start * l_est_vec + l_est_vec) *
+      (1 - exp(-l_est_vec)) + 1) /
       l_est_vec
   )
 
@@ -49,7 +49,23 @@ get_start_values_abc <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_p
   ))
 }
 
-train_simple_ddpcr_model <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_pos_vec) {
+train_simple_ddpcr_model <- function(training_samples) {
+  # Check if expected columns are present
+  if (!all(c("N_WT_only", "N_M_only", "N_d_neg", "N_d_pos") %in% colnames(training_samples))) {
+    missing_cols <-
+      setdiff(
+        c("N_WT_only", "N_M_only", "N_d_neg", "N_d_pos"),
+        colnames(training_samples)
+      )
+    stop(paste(missing_cols, "are missing from training_samples"))
+  }
+
+  # Unpack data
+  N_WT_only_vec <- training_samples$N_WT_only
+  N_M_only_vec <- training_samples$N_M_only
+  N_d_neg_vec <- training_samples$N_d_neg
+  N_d_pos_vec <- training_samples$N_d_pos
+
   # Estimate lambdas
   l_est_vec <- log((N_WT_only_vec + N_d_pos_vec) / (N_d_neg_vec + N_M_only_vec) + 1)
 
@@ -92,20 +108,22 @@ train_simple_ddpcr_model <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N
     a_est = par_est[1],
     b_est = par_est[2],
     c_est = par_est[3],
-    a_start = start_values$a_start,
-    b_start = start_values$b_start,
-    c_start = start_values$c_start,
-    ll_max = optim_res$value,
     l_est_vec = l_est_vec
   )
   return(res)
 }
 
-estimate_parameters_test <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
-                                     a_train_est, b_train_est, c_train_est) {
+estimate_l <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos) {
 
   # Estimate l
   l_est <- log((N_WT_only + N_d_pos) / (N_d_neg + N_M_only) + 1)
+
+  return(l_est)
+}
+
+estimate_r <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
+                       l_est,
+                       a_train_est, b_train_est, c_train_est) {
 
   # Get starting value of r (rough estimates)
   r_start_init <- log((N_M_only + N_d_pos) / (N_d_neg + N_WT_only) + 1)
@@ -137,30 +155,41 @@ estimate_parameters_test <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
   # Get optimal value of r
   r_est <- exp(optim_res$par)
 
-  return(list(
-    l_est = l_est,
-    r_est = r_est,
-    r_start = r_start
-  ))
+  return(r_est)
 }
 
-test_tumor_sample_simple <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
-                                     a_train_est, b_train_est, c_train_est,
+test_tumor_sample_simple <- function(test_samples,
+                                     model,
                                      alpha = 0.05) {
 
+  # Unpack parameters
+  N_WT_only <- test_samples$N_WT_only
+  N_M_only <- test_samples$N_M_only
+  N_d_neg <- test_samples$N_d_neg
+  N_d_pos <- test_samples$N_d_pos
+
+  a_train_est <- model$a_est
+  b_train_est <- model$b_est
+  c_train_est <- model$c_est
+
   # Estimate parameters
-  par_est <- estimate_parameters_test(
+  l_est <- estimate_l(
+    N_WT_only = N_WT_only,
+    N_M_only = N_M_only,
+    N_d_neg = N_d_neg,
+    N_d_pos = N_d_pos
+  )
+
+  r_est <- estimate_r(
     N_WT_only = N_WT_only,
     N_M_only = N_M_only,
     N_d_neg = N_d_neg,
     N_d_pos = N_d_pos,
+    l_est = l_est,
     a_train_est = a_train_est,
     b_train_est = b_train_est,
     c_train_est = c_train_est
   )
-
-  l_est <- par_est$l_est
-  r_est <- par_est$r_est
 
   bounds_res <- find_lr_confidence_intervals(
     N_WT_only = N_WT_only,
