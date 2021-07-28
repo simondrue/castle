@@ -3,5 +3,7 @@
 export("%>%")
 export(simulate_droplet_counts)
 export(simulate_molecule_counts)
+export(test_tumor_sample_integrated)
+export(train_integrated_ddpcr_model)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
