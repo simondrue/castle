@@ -1,9 +1,9 @@
 test_that("training model - snapshot", {
   training_samples <- data.frame(
-    N_WT_only = c(10, 20, 30),
-    N_M_only = c(1, 2, 3),
-    N_d_neg = c(30, 30, 30),
-    N_d_pos = c(1, 1, 1)
+    N_WT_only = c(10, 20, 30, 0),
+    N_M_only = c(1, 2, 3, 0),
+    N_d_neg = c(30, 30, 30, 30),
+    N_d_pos = c(1, 1, 1, 0)
   )
 
   abc_grid_resolution <- 7
@@ -26,9 +26,9 @@ test_that("training model - snapshot", {
   )
 
   # Snapshot test of output
-  expect_equal(model$a_est, 1.005659e-06, tolerance = 1e-3)
-  expect_equal(model$b_est, 9.966160e-07, tolerance = 1e-3)
-  expect_equal(model$c_est, 0.1132368000, tolerance = 1e-3)
+  expect_equal(signif(model$a_est,3), 5.13e-07)
+  expect_equal(signif(model$b_est, 3), 8.09e-07)
+  expect_equal(signif(model$c_est, 3), 0.113)
 })
 
 test_that("simulation - training - test", {
@@ -65,14 +65,14 @@ test_that("simulation - training - test", {
       l = l_mid, r = 0.1, a = a, b = b, c = c, n_drops = n_drops
     )
 
-  # Test negative sample
+  # Negative sample
   test_sample_negative <-
     simulate_droplet_counts(
       l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops
     )
 
   # Train model
-  trained_model <- train_integrated_ddpcr_model(
+  trained_integrated_model <- train_integrated_ddpcr_model(
     training_samples = training_samples,
     abc_grid_resolution = 10
   )
@@ -81,7 +81,7 @@ test_that("simulation - training - test", {
   # Positive
   positive_test_res <- test_tumor_sample_integrated(
     test_samples = test_sample_positive,
-    model = trained_model
+    integrated_model = trained_integrated_model
   )
 
   expect_true(positive_test_res$is_tumor_positive)
@@ -90,8 +90,21 @@ test_that("simulation - training - test", {
   # Negative
   negative_test_res <- test_tumor_sample_integrated(
     test_samples = test_sample_negative,
-    model = trained_model
+    integrated_model = trained_integrated_model
   )
 
   expect_false(negative_test_res$is_tumor_positive)
+
+  # Multiple samples
+  multiple_test_res <- test_tumor_sample_integrated(
+    test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
+    integrated_model = trained_integrated_model
+  )
+
+  # Dimensions
+  expect_equal(nrow(multiple_test_res), 2)
+
+  # Consistent with single tests
+  expect_true(all(multiple_test_res[1, ] == positive_test_res))
+  expect_true(all(multiple_test_res[2, ] == negative_test_res))
 })

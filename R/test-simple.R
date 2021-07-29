@@ -20,7 +20,7 @@ get_start_values_abc <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_p
     sum((l_est_vec - mean(l_est_vec))^2)
   a_start <- mean(y) - c_start * mean(l_est_vec)
 
-  # Make appropiate corrections if any parameter is less than MIN_START_PAR
+  # Make appropriate corrections if any parameter is less than MIN_START_PAR
   if (c_start < MIN_START_PAR & a_start >= MIN_START_PAR) {
     a_start <- mean(y)
     c_start <- MIN_START_PAR
@@ -35,8 +35,8 @@ get_start_values_abc <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_p
   # From a and c we find b
   b_start_vec <- -log(
     log(N_WT_only_vec / (N_WT_only_vec + N_d_pos_vec) *
-      exp(a_start + c_start * l_est_vec + l_est_vec) *
-      (1 - exp(-l_est_vec)) + 1) /
+          exp(a_start + c_start * l_est_vec + l_est_vec) *
+          (1 - exp(-l_est_vec)) + 1) /
       l_est_vec
   )
 
@@ -59,6 +59,16 @@ train_simple_ddpcr_model <- function(training_samples) {
       )
     stop(paste(missing_cols, "are missing from training_samples"))
   }
+
+  # # Check if empty/water sample is present
+  # empty_test_df =
+  #   training_samples %>%
+  #   mutate(is_empty = N_WT_only + N_M_only + N_d_neg + N_d_pos == 0)
+  #
+  # if(any(empty_test_df$is_empty)){
+  #   empty_samples = which(empty_test_df$is_empty)
+  #   stop(paste("The sample [", empty_samples, "] only have ."))
+  # }
 
   # Unpack data
   N_WT_only_vec <- training_samples$N_WT_only

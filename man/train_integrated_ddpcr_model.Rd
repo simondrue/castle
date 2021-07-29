@@ -4,20 +4,27 @@
 \alias{train_integrated_ddpcr_model}
 \title{Train integrated CASTLE model}
 \usage{
-train_integrated_ddpcr_model(
-  N_WT_only_vec,
-  N_M_only_vec,
-  N_d_neg_vec,
-  N_d_pos_vec,
-  abc_grid_resolution = 25
-)
+train_integrated_ddpcr_model(training_samples, abc_grid_resolution = 25)
 }
 \arguments{
-\item{abc_grid_resolution}{}
+\item{training_samples}{\code{data.frame} with cancer negative training samples as rows.
+At least the columns \code{N_WT_only}, \code{N_M_only}, \code{N_d_neg} and \code{N_d_pos} should be present.}
+
+\item{abc_grid_resolution}{The resolution of the 3D-grid on which the integrated LR-test statistic is approximated. Default is 25 (equal to a grid of 25^3 = 15,625 point).}
 }
 \value{
-
+List of parameter estimates for the integrated CASLTE model. This should be used as input for \code{test_tumor_sample_integrated}.
 }
 \description{
-Train integrated CASTLE model
+\code{train_integrated_ddpcr_model} estimates the parameters of the statistical
+ model for the integrated version the CASTLE algorithm based on a set of training samples,
+ assumed to have no mutant DNA present.
 }
+\details{
+In the test an integrated version of the Likelihood Ratio test statistic is used,
+ and this is approximated using a Riemann sum on a 3D-grid.
+ The parameter \code{abc_grid_resolution} controls this approximation as
+ the sum is calculated on \code{abc_grid_resolution^3} points.
+ Higher values give better approximation but longer computational times.
+}
+\concept{castle_functions}
