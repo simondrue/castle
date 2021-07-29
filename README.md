@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Welcome to the **castle**
+# Welcome to the **CASTLE**
 
 <!-- badges: start -->
 <!-- badges: end -->
