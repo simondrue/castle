@@ -52,7 +52,6 @@ get_abc_grid_log_lik <- function(N_WT_only_vec,
   return(log_lik_sum_vec)
 }
 
-
 integrated_log_lik <- function(l, r,
                                N_WT_only,
                                N_M_only,
@@ -153,9 +152,9 @@ get_r_CI_integrated <- function(r_est, l_est,
       interval = c(TOL_0, r_est),
       tol = TOL_0
     )
-    r_CI_lower <- uni_res$root
+    lower <- uni_res$root
   } else {
-    r_CI_lower <- 0
+    lower <- 0
   }
 
   # Upper bound
@@ -164,12 +163,12 @@ get_r_CI_integrated <- function(r_est, l_est,
     tol = TOL_0,
     extendInt = "upX"
   )
-  r_CI_upper <- uni_res$root
+  upper <- uni_res$root
 
   # Return result
-  res <- data.frame(
-    r_CI_lower = r_CI_lower,
-    r_CI_upper = r_CI_upper
+  res <- list(
+    lower = lower,
+    upper = upper
   )
   return(res)
 }
@@ -230,4 +229,95 @@ estimate_r_integrated <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
   }
 
   return(r_est)
+}
+
+test_r_equal_0_integrated <- function(l_est, r_est,
+                                      N_WT_only, N_M_only, N_d_neg, N_d_pos,
+                                      abc_grid_train_log_lik, abc_grid,
+                                      include_r_CI, alpha) {
+  # Test hypothesis H0: r == 0 vs HA: r > 0
+  # LLR with integrated likelihood function
+
+  # Calculate LL for full model (HA)
+  LL_A <- integrated_log_lik(
+    l = l_est,
+    r = r_est,
+    N_WT_only = N_WT_only,
+    N_M_only = N_M_only,
+    N_d_neg = N_d_neg,
+    N_d_pos = N_d_pos,
+    abc_grid_train_log_lik = abc_grid_train_log_lik,
+    abc_grid = abc_grid
+  )
+
+  # Calculate LL for simple model (H0)
+  LL_0 <- integrated_log_lik(
+    l = l_est,
+    r = 0,
+    N_WT_only = N_WT_only,
+    N_M_only = N_M_only,
+    N_d_neg = N_d_neg,
+    N_d_pos = N_d_pos,
+    abc_grid_train_log_lik = abc_grid_train_log_lik,
+    abc_grid = abc_grid
+  )
+
+  # Get test statistic and p-value
+  r_LLR_test_stat <- -2 * (LL_0 - LL_A)
+  r_less_than_0_pval <- 1 - stats::pchisq(r_LLR_test_stat, 1)
+
+  # Gather results
+  total_droplets <- N_WT_only + N_M_only + N_d_neg + N_d_pos
+  total_tumor_molecules_expected <- r_est * total_droplets
+  is_tumor_positive <- r_less_than_0_pval < alpha
+
+  # Collect results
+  res <- list(
+    # Estimated values for r
+    r_est = r_est,
+    # Estimated values for l:
+    l_est = l_est,
+    # Test statistics
+    pval_r_leq_0 = r_less_than_0_pval,
+    r_LLR_test_stat = r_LLR_test_stat,
+    # Other results:
+    is_tumor_positive = is_tumor_positive,
+    total_tumor_molecules_expected = total_tumor_molecules_expected,
+    total_droplets = total_droplets
+  )
+
+  if (include_r_CI) {
+    # Find bounds on r
+    r_CI <- get_r_CI_integrated(
+      r_est = r_est,
+      l_est = l_est,
+      N_WT_only = N_WT_only,
+      N_M_only = N_M_only,
+      N_d_neg = N_d_neg,
+      N_d_pos = N_d_pos,
+      alpha = alpha,
+      abc_grid = abc_grid,
+      abc_grid_train_log_lik = abc_grid_train_log_lik
+    )
+
+    # Extract bounds
+    r_CI_lower <- r_CI$lower
+    r_CI_upper <- r_CI$upper
+
+    # Calculate CI on the number of "real" tumor molecules
+    total_tumor_molecules_CI_lower <- r_CI_lower * total_droplets
+    total_tumor_molecules_CI_upper <- r_CI_upper * total_droplets
+
+    # Add CI's to results
+    res <- append(res, list(
+      # Estimated values for r
+      r_CI_lower = r_CI_lower,
+      r_CI_upper = r_CI_upper,
+      # Total number of molecules
+      total_tumor_molecules_CI_lower = total_tumor_molecules_CI_lower,
+      total_tumor_molecules_CI_upper = total_tumor_molecules_CI_upper
+    ))
+  }
+
+  return(res)
 }

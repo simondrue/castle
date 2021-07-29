@@ -53,3 +53,16 @@ check_input_samples <- function(samples) {
     ))
   }
 }
+
+get_l_CI <- function(N_M_only, N_d_neg, N_WT_only, N_d_pos, alpha) {
+  # Find bounds on l
+  # Model as binomial with p = P(WT=0)=exp(-l)
+  WT_neg <- N_M_only + N_d_neg
+  n_drops <- N_WT_only + N_M_only + N_d_neg + N_d_pos
+
+  binom_res <- stats::binom.test(x = WT_neg, n = n_drops, conf.level = 1 - alpha)
+
+  lower <- -log(binom_res$conf.int[[2]])
+  upper <- -log(binom_res$conf.int[[1]])
+  return(list(lower = lower, upper = upper))
+}

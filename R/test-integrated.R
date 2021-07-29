@@ -149,7 +149,6 @@ test_tumor_sample_integrated <- function(test_samples,
     abc_grid <- integrated_model$abc_grid
     abc_grid_train_log_lik <- integrated_model$abc_grid_train_log_lik
 
-
     # Estimate l and r for test sample
     # Get starting value from simple method
     l_est <- estimate_l(
@@ -167,110 +166,37 @@ test_tumor_sample_integrated <- function(test_samples,
       l_est = l_est, integrated_model = integrated_model
     )
 
-    # Test hypothesis H0: r == 0 vs HA: r > 0
-    # LLR with integrated likelihood function
-
-    # Calculate LL for full model (HA)
-    LL_A <- integrated_log_lik(
-      l = l_est,
-      r = r_est,
-      N_WT_only = N_WT_only,
-      N_M_only = N_M_only,
-      N_d_neg = N_d_neg,
-      N_d_pos = N_d_pos,
-      abc_grid_train_log_lik = abc_grid_train_log_lik,
-      abc_grid = abc_grid
-    )
-
-    # Calculate LL for simple model (H0)
-    LL_0 <- integrated_log_lik(
-      l = l_est,
-      r = 0,
-      N_WT_only = N_WT_only,
-      N_M_only = N_M_only,
-      N_d_neg = N_d_neg,
-      N_d_pos = N_d_pos,
-      abc_grid_train_log_lik = abc_grid_train_log_lik,
-      abc_grid = abc_grid
-    )
-
-    # Get test statistic and p-value
-    r_LLR_test_stat <- -2 * (LL_0 - LL_A)
-    r_less_than_0_pval <- 1 - stats::pchisq(r_LLR_test_stat, 1)
-
-
-    # Gather results
-    total_droplets <- N_WT_only + N_M_only + N_d_neg + N_d_pos
-    total_tumor_molecules_expected <- r_est * total_droplets
-    is_tumor_positive <- r_less_than_0_pval < alpha
-
-    # Collect results
-    res <- list(
-      # Estimated values for r
-      r_est = r_est,
-      # Estimated values for l:
+    res <- test_r_equal_0_integrated(
       l_est = l_est,
-      # Test statistics
-      pval_r_leq_0 = r_less_than_0_pval,
-      r_LLR_test_stat = r_LLR_test_stat,
-      # Other results:
-      is_tumor_positive = is_tumor_positive,
-      total_tumor_molecules_expected = total_tumor_molecules_expected,
-      total_droplets = total_droplets
+      r_est = r_est,
+      N_WT_only = N_WT_only,
+      N_M_only = N_M_only,
+      N_d_neg = N_d_neg,
+      N_d_pos = N_d_pos,
+      abc_grid_train_log_lik = abc_grid_train_log_lik,
+      abc_grid = abc_grid,
+      include_r_CI = include_r_CI,
+      alpha = alpha
     )
-
-    if (include_r_CI) {
-      # Find bounds on r
-      bounds_res <- get_r_CI_integrated(
-        r_est = r_est,
-        l_est = l_est,
-        N_WT_only = N_WT_only,
-        N_M_only = N_M_only,
-        N_d_neg = N_d_neg,
-        N_d_pos = N_d_pos,
-        alpha = alpha,
-        abc_grid = abc_grid,
-        abc_grid_train_log_lik = abc_grid_train_log_lik
-      )
-
-      # Extract bounds
-      r_CI_lower <- bounds_res$r_CI_lower
-      r_CI_upper <- bounds_res$r_CI_upper
-
-      # Calculate CI on the number of "real" tumor molecules
-      total_tumor_molecules_CI_lower <- r_CI_lower * total_droplets
-      total_tumor_molecules_CI_upper <- r_CI_upper * total_droplets
-
-      # Add CI's to results
-      res <- append(res, list(
-        # Estimated values for r
-        r_CI_lower = r_CI_lower,
-        r_CI_upper = r_CI_upper,
-        # Total number of molecules
-        total_tumor_molecules_CI_lower = total_tumor_molecules_CI_lower,
-        total_tumor_molecules_CI_upper = total_tumor_molecules_CI_upper
-      ))
-    }
 
     if (include_l_CI) {
-      # Find bounds on l
-      # Model as binomial with p = P(WT=0)=exp(-l)
-      WT_neg <- N_M_only + N_d_neg
-      n_drops <- N_WT_only + N_M_only + N_d_neg + N_d_pos
-
-      binom_res <- stats::binom.test(x = WT_neg, n = n_drops, conf.level = 1 - alpha)
-
-      l_CI_lower <- -log(binom_res$conf.int[[2]])
-      l_CI_upper <- -log(binom_res$conf.int[[1]])
+      l_CI <- get_l_CI(
+        N_M_only = N_M_only,
+        N_d_neg = N_d_neg,
+        N_WT_only = N_WT_only,
+        N_d_pos = N_d_pos,
+        alpha = alpha
+      )
 
       # Add CI's to results
       res <- append(res, list(
         # Estimated values for l:
-        l_CI_lower = l_CI_lower,
-        l_CI_upper = l_CI_upper
+        l_CI_lower = l_CI$lower,
+        l_CI_upper = l_CI$upper
       ))
     }
 
+    # Collect results
     res_df <- dplyr::bind_rows(res_df, dplyr::bind_cols(test_sample, res))
   }
 

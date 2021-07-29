@@ -1,28 +1,19 @@
 test_that("training model - snapshot", {
   training_samples <- data.frame(
-    N_WT_only = c(10, 20, 30),
-    N_M_only = c(1, 2, 3),
-    N_d_neg = c(30, 30, 30),
-    N_d_pos = c(1, 1, 1)
+    N_WT_only = c(10, 20, 30, 0),
+    N_M_only = c(1, 2, 3, 0),
+    N_d_neg = c(30, 30, 30, 30),
+    N_d_pos = c(1, 1, 1, 0)
   )
-
-  abc_grid_resolution <- 7
 
   model <- train_simple_ddpcr_model(
     training_samples = training_samples
   )
 
-  # Test dimensions of output
-  expect_true(
-    all(
-      c("a_est", "b_est", "c_est", "l_est_vec") %in% names(model)
-    )
-  )
-
   # Snapshot test of output
-  expect_equal(model$a_est, 1.005659e-06, tolerance = 1e-3)
-  expect_equal(model$b_est, 9.966160e-07, tolerance = 1e-3)
-  expect_equal(model$c_est, 0.1132368000, tolerance = 1e-3)
+  expect_snapshot(train_simple_ddpcr_model(
+    training_samples = training_samples
+  ))
 })
 
 test_that("simulation - training - test", {
@@ -59,7 +50,7 @@ test_that("simulation - training - test", {
       l = l_mid, r = 0.1, a = a, b = b, c = c, n_drops = n_drops
     )
 
-  # Test negative sample
+  # Negative sample
   test_sample_negative <-
     simulate_droplet_counts(
       l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops
@@ -74,7 +65,7 @@ test_that("simulation - training - test", {
   # Positive
   positive_test_res <- test_tumor_sample_simple(
     test_samples = test_sample_positive,
-    model = trained_model
+    simple_model = trained_model
   )
 
   expect_true(positive_test_res$is_tumor_positive)
@@ -83,8 +74,37 @@ test_that("simulation - training - test", {
   # Negative
   negative_test_res <- test_tumor_sample_simple(
     test_samples = test_sample_negative,
-    model = trained_model
+    simple_model = trained_model
   )
 
   expect_false(negative_test_res$is_tumor_positive)
+
+  # Multiple samples
+  multiple_test_res <- test_tumor_sample_simple(
+    test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
+    simple_model = trained_model
+  )
+
+  # Snapshot
+  expect_equal(nrow(multiple_test_res), 2)
+  expect_snapshot(multiple_test_res)
+
+  # No CIs
+  no_CIs_res <- test_tumor_sample_simple(
+    test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
+    simple_model = trained_model,
+    include_l_CI = FALSE,
+    include_r_CI = FALSE
+  )
+
+  expect_false(
+    any(
+      c("r_CI_lower", "r_CI_upper", "l_CI_lower", "l_CI_upper") %in% colnames(no_CIs_res)
+    )
+  )
+  expect_snapshot(no_CIs_res)
+
+  # Consistent with single tests
+  expect_true(all(multiple_test_res[1, ] == positive_test_res))
+  expect_true(all(multiple_test_res[2, ] == negative_test_res))
 })
