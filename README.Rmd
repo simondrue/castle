@@ -26,33 +26,145 @@ This package is a user friendly implementation of the CASTLE algorithm, as it is
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the R -package from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("simondrue/castle")
 ```
-## Example
+## Quickstart guide
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
+In this section we will go through how to load a dataset from QuantaSoft, train a model for the CASTLE algorithm and test some samples. The first thing we need to do is load the packages we need for the analysis:
+```{r, example}
 library(castle)
-## basic example code
+library(dplyr)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+### Loading QuantaSoft data
+We start by loading a QuantaSoft dataset in \code{.csv}-format using the included \code{import_QS_files}-function. Here we will use the example data included in the package, which can be loaded like this:
 
-```{r cars}
-summary(cars)
+```{r, loading data}
+path_to_my_data = system.file("extdata", "training_data_KRAS_G12D.csv", package = "castle")
+training_samples = import_QS_files(path_to_my_data)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+The first 5 samples in \code{training_samples} looks like this:
+```{r, echo=FALSE}
+knitr::kable(head(training_samples, 5))
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+Note that besides some metadata (filename, target etc.) for each sample, the columns "WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets" and "DoublePositiveDroplets" is the count of the four different kinds of droplets for each sample. The following model training and statistical tests are based solely on these counts. 
+
+### Training a model for CASTLE 
+To train the model we are only interested in the negative plasma samples. Thus we start by removing the negative ("NTC") and positive controls from the dataset:
+```{r, data cleaning}
+# Remove control samples ("NTC" and "Positive Control")
+training_samples_clean = 
+  training_samples %>%
+  filter(
+    !Ch1TargetType %in% c("NTC", "Positive Control"),
+    !Ch2TargetType %in% c("NTC", "Positive Control")
+  )
+```
+The cleaned data is then used for model training using the function \code{train_simple_ddpcr_model}:
+```{r, model trainging}
+# Train model
+trained_model <- train_integrated_ddpcr_model(
+  training_samples = training_samples_clean
+)
+```
+
+The object \code{trained_model} is simply a list of parameters used in the statistical model in CASTLE.
+
+### Testing some samples with CASTLE 
+
+For testing we will use 2 blood samples from each of 2 patients. These blood samples was taken before (A) and after (B) curative surgery of colorectal cancer. These samples will there for indicate if a mutation was present in the tumor (A) and if the tumor was successfully removed (B). More precisely post operative samples can be used as a follow up to see if a patient gets a relapse.
+
+To load the data we will again use the function \code{import_QS_files}. But this time data from each patient is distributed across multiple wells. These can be merged together using the flag \code{merge_wells = TRUE}. Furthermore samples across multiple files can also be merged using the flag \code{merge_files = TRUE} if necessary. 
+
+```{r, load test samples}
+path_to_my_test_samples = system.file(
+  "extdata/test_samples", 
+  c(
+    "patient_1_plasma_KRAS_G12D.csv",
+    "patient_2_plasma_KRAS_G12D.csv"
+  ), 
+  package = "castle")
+
+test_samples = import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
+```
+```{r, echo=FALSE}
+knitr::kable(test_samples)
+```
+
+Note that besides the plasma samples we also have a tumor sample ("tumor") and "PBL" sample for each patient, which can be used as positive and negative controls for each patient. Furthermore a negative and positive control is present in each sample.
+
+To test the samples we use the function \code{test_tumor_sample_integrated}:
+
+```{r, testing samples}
+test_res = test_tumor_sample_integrated(
+  test_samples = test_samples, 
+  integrated_model = trained_model
+)
+```
+In \code{test_res} all of the output from the algorithm is joined with input \code{data.frame}. Here is some of the most relevant output:
+```{r, echo=FALSE}
+knitr::kable(test_res %>% select(
+  Sample, p_val, mutation_detected,
+  total_mutant_molecules, total_mutant_molecules_CI_lower, total_mutant_molecules_CI_upper)
+)
+```
+
+## Note 
+Alternatively the functions \code{train_integrated_ddpcr_model} and \code{test_tumor_sample_simple} are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information. 
+
+## Simulating data
+
+In the package the function \code{simulate_droplet_counts} for simulating droplet counts from the statistical model that CASTLE is based on is also provided. Here we will simulate a positive and negative sample based on the parameters learned above, and test them using \code{test_tumor_sample_integrated}:
+
+```{r}
+# DNA concentration (molecules per droplet)
+l = 0.5 # WT
+r_positive = 0.01 # M
+r_negative = 0 # M
+
+# Number of droplets
+n_drops = 14000
+
+# Positive sample
+test_sample_positive <-
+  simulate_droplet_counts(
+    l = l, r = r_positive, 
+    a = trained_model$a_est, b = trained_model$b_est, c = trained_model$c_est, 
+    n_drops = n_drops
+  )
+
+# Negative sample
+test_sample_negative <-
+  simulate_droplet_counts(
+    l = l, r = r_negative, 
+    a = trained_model$a_est, b = trained_model$b_est, c = trained_model$c_est, 
+    n_drops = n_drops
+  )
+
+
+simulated_samples = bind_rows(
+  data.frame(Sample = "Positive", test_sample_positive),
+  data.frame(Sample = "Negative", test_sample_negative)
+)
+
+
+# Test samples
+sim_test_res = test_tumor_sample_simple(
+  test_samples = simulated_samples,
+  simple_model = trained_model
+)
+```
+
+```{r, echo=FALSE}
+knitr::kable(sim_test_res %>% select(
+  Sample, p_val, mutation_detected,
+  total_mutant_molecules, total_mutant_molecules_CI_lower, total_mutant_molecules_CI_upper)
+)
+```
+

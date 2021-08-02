@@ -18,46 +18,219 @@ implementation of the CASTLE algorithm, as it is described in \[1\].
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the R -package from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("simondrue/castle")
 ```
 
-## Example
+## Quickstart guide
 
-This is a basic example which shows you how to solve a common problem:
+In this section we will go through how to load a dataset from
+QuantaSoft, train a model for the CASTLE algorithm and test some
+samples. The first thing we need to do is load the packages we need for
+the analysis:
 
 ``` r
 library(castle)
-## basic example code
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+### Loading QuantaSoft data
+
+We start by loading a QuantaSoft dataset in -format using the included
+-function. Here we will use the example data included in the package,
+which can be loaded like this:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+path_to_my_data = system.file("extdata", "training_data_KRAS_G12D.csv", package = "castle")
+training_samples = import_QS_files(path_to_my_data)
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
+The first 5 samples in looks like this:
 
-You can also embed plots, for example:
+| Sample     | FileName                       | Target          | Ch1TargetType | Ch2TargetType | WildtypeOnlyDroplets | MutantOnlyDroplets | DoubleNegativeDroplets | DoublePositiveDroplets | TotalDroplets | NumberOfMergedWells | MergedWells |
+|:-----------|:-------------------------------|:----------------|:--------------|:--------------|---------------------:|-------------------:|-----------------------:|-----------------------:|--------------:|--------------------:|:------------|
+| NC20\_150  | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                11005 |                  0 |                   2415 |                      0 |         13420 |                   1 | (A01)       |
+| NC20\_24   | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 4040 |                  0 |                  12458 |                      1 |         16499 |                   1 | (F05)       |
+| NC20\_3.84 | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                  463 |                  0 |                  17966 |                      0 |         18429 |                   1 | (D10)       |
+| NC20\_60   | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 7283 |                  0 |                   6762 |                      1 |         14046 |                   1 | (C03)       |
+| NC20\_9.6  | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 1547 |                  0 |                  14554 |                      1 |         16102 |                   1 | (A08)       |
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+Note that besides some metadata (filename, target etc.) for each sample,
+the columns “WildtypeOnlyDroplets”, “MutantOnlyDroplets”,
+“DoubleNegativeDroplets” and “DoublePositiveDroplets” is the count of
+the four different kinds of droplets for each sample. The following
+model training and statistical tests are based solely on these counts.
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+### Training a model for CASTLE
+
+To train the model we are only interested in the negative plasma
+samples. Thus we start by removing the negative (“NTC”) and positive
+controls from the dataset:
+
+``` r
+# Remove control samples ("NTC" and "Positive Control")
+training_samples_clean = 
+  training_samples %>%
+  filter(
+    !Ch1TargetType %in% c("NTC", "Positive Control"),
+    !Ch2TargetType %in% c("NTC", "Positive Control")
+  )
+```
+
+The cleaned data is then used for model training using the function :
+
+``` r
+# Train model
+trained_model <- train_integrated_ddpcr_model(
+  training_samples = training_samples_clean
+)
+```
+
+The object is simply a list of parameters used in the statistical model
+in CASTLE.
+
+### Testing some samples with CASTLE
+
+For testing we will use 2 blood samples from each of 2 patients. These
+blood samples was taken before (A) and after (B) curative surgery of
+colorectal cancer. These samples will there for indicate if a mutation
+was present in the tumor (A) and if the tumor was successfully removed
+(B). More precisely post operative samples can be used as a follow up to
+see if a patient gets a relapse.
+
+To load the data we will again use the function . But this time data
+from each patient is distributed across multiple wells. These can be
+merged together using the flag . Furthermore samples across multiple
+files can also be merged using the flag if necessary.
+
+``` r
+path_to_my_test_samples = system.file(
+  "extdata/test_samples", 
+  c(
+    "patient_1_plasma_KRAS_G12D.csv",
+    "patient_2_plasma_KRAS_G12D.csv"
+  ), 
+  package = "castle")
+
+test_samples = import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
+```
+
+| Sample           | FileName                           | Target        | Ch1TargetType    | Ch2TargetType    | WildtypeOnlyDroplets | MutantOnlyDroplets | DoubleNegativeDroplets | DoublePositiveDroplets | TotalDroplets | NumberOfMergedWells | MergedWells               |
+|:-----------------|:-----------------------------------|:--------------|:-----------------|:-----------------|---------------------:|-------------------:|-----------------------:|-----------------------:|--------------:|--------------------:|:--------------------------|
+| Negative Control | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4082 |                  0 |                  12254 |                      1 |         16337 |                   1 | (G02)                     |
+| Negative Control | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4876 |                  0 |                  13350 |                      1 |         18227 |                   1 | (G02)                     |
+| NTC              | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | NTC              | NTC              |                    0 |                  0 |                  15899 |                      0 |         15899 |                   1 | (A03)                     |
+| NTC              | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | NTC              | NTC              |                    1 |                  0 |                  13194 |                      0 |         13195 |                   1 | (A03)                     |
+| Patient1 PBL     | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4012 |                  0 |                  11927 |                      0 |         15939 |                   1 | (F02)                     |
+| Patient1 PlasmaA | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                17647 |                 20 |                  70449 |                      2 |         88118 |                   6 | (A01,B01,C01,D01,E01,F01) |
+| Patient1 PlasmaB | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                58635 |                  1 |                  33256 |                      5 |         91897 |                   6 | (G01,H01,A02,B02,C02,D02) |
+| Patient1 tumor   | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 1625 |               1197 |                  13647 |                    130 |         16599 |                   1 | (E02)                     |
+| Patient2 PBL     | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 3734 |                  0 |                  12900 |                      2 |         16636 |                   1 | (F02)                     |
+| Patient2 PlasmaA | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                 8885 |                350 |                  88100 |                     26 |         97361 |                   6 | (A01,B01,C01,D01,E01,F01) |
+| Patient2 PlasmaB | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                20069 |                  1 |                  71500 |                      1 |         91571 |                   6 | (G01,H01,A02,B02,C02,D02) |
+| Patient2 tumor   | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 1744 |               2403 |                  10607 |                    290 |         15044 |                   1 | (E02)                     |
+| Positive Control | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 2647 |                897 |                  13468 |                    191 |         17203 |                   1 | (H02)                     |
+| Positive Control | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 2932 |               1026 |                  12001 |                    207 |         16166 |                   1 | (H02)                     |
+
+Note that besides the plasma samples we also have a tumor sample
+(“tumor”) and “PBL” sample for each patient, which can be used as
+positive and negative controls for each patient. Furthermore a negative
+and positive control is present in each sample.
+
+To test the samples we use the function :
+
+``` r
+test_res = test_tumor_sample_integrated(
+  test_samples = test_samples, 
+  integrated_model = trained_model
+)
+```
+
+In all of the output from the algorithm is joined with input . Here is
+some of the most relevant output:
+
+| Sample           |    p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
+|:-----------------|----------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
+| Negative Control | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            5.036182 |
+| Negative Control | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            4.919336 |
+| NTC              | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
+| NTC              | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
+| Patient1 PBL     | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
+| Patient1 PlasmaA | 0.0000000 | TRUE               |               21.3217613 |                            11.35769 |                           35.700996 |
+| Patient1 PlasmaB | 0.3061083 | FALSE              |                1.3922873 |                             0.00000 |                            9.256786 |
+| Patient1 tumor   | 0.0000000 | TRUE               |             1382.9277741 |                          1287.38234 |                         1483.057837 |
+| Patient2 PBL     | 0.4550231 | FALSE              |                0.8848258 |                             0.00000 |                            7.010167 |
+| Patient2 PlasmaA | 0.0000000 | TRUE               |              376.0943247 |                           328.24095 |                          428.382103 |
+| Patient2 PlasmaB | 0.2424636 | FALSE              |                0.8937113 |                             0.00000 |                            6.587480 |
+| Patient2 tumor   | 0.0000000 | TRUE               |             2967.1893131 |                          2822.09013 |                         3117.161312 |
+| Positive Control | 0.0000000 | TRUE               |             1123.7094879 |                          1038.17978 |                         1213.779018 |
+| Positive Control | 0.0000000 | TRUE               |             1282.3544262 |                          1190.51928 |                         1378.763612 |
+
+## Note
+
+Alternatively the functions and are used for training and testing
+respectively. These are based on a faster (and simpler) version of the
+CASTLE algorithm, but have very similar performance. See \[1\] for more
+information.
+
+## Simulating data
+
+In the package the function for simulating droplet counts from the
+statistical model that CASTLE is based on is also provided. Here we will
+simulate a positive and negative sample based on the parameters learned
+above, and test them using :
+
+``` r
+# DNA concentration (molecules per droplet)
+l = 0.5 # WT
+r_positive = 0.01 # M
+r_negative = 0 # M
+
+# Number of droplets
+n_drops = 14000
+
+# Positive sample
+test_sample_positive <-
+  simulate_droplet_counts(
+    l = l, r = r_positive, 
+    a = trained_model$a_est, b = trained_model$b_est, c = trained_model$c_est, 
+    n_drops = n_drops
+  )
+
+# Negative sample
+test_sample_negative <-
+  simulate_droplet_counts(
+    l = l, r = r_negative, 
+    a = trained_model$a_est, b = trained_model$b_est, c = trained_model$c_est, 
+    n_drops = n_drops
+  )
+
+
+simulated_samples = bind_rows(
+  data.frame(Sample = "Positive", test_sample_positive),
+  data.frame(Sample = "Negative", test_sample_negative)
+)
+
+
+# Test samples
+sim_test_res = test_tumor_sample_simple(
+  test_samples = simulated_samples,
+  simple_model = trained_model
+)
+```
+
+| Sample   | p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
+|:---------|-------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
+| Positive |      0 | TRUE               |                 136.2452 |                            108.2398 |                          168.693329 |
+| Negative |      1 | FALSE              |                   0.0000 |                              0.0000 |                            3.317448 |
