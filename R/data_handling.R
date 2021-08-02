@@ -1,8 +1,26 @@
+#' Import data form QuantaSoft
+#'
+#' @param paths
+#' @param Ch1_is_mutation
+#' @param annotations
+#' @param sample_annotations
+#' @param merge_wells Logical. Controls if wells from the sample sample
+#'   ("Sample") should be merged within a dataset. If \code{merge_wells="qs"}
+#'   the merged wells from QuantaSoft (MXX) is used. Default if FALSE.
+#' @param merge_files Logical. If this and \code{merge_wells} is TRUE, samples
+#'   across files are also merged. Default is FALSE.
+#' @param include_qs_concentrations
+#'
+#' @return
+#' @export
+#'
+#' @examples
 import_QS_files <- function(paths,
                             Ch1_is_mutation = TRUE,
                             annotations = NULL,
                             sample_annotations = NULL,
-                            merge_wells = "no",
+                            merge_wells = FALSE,
+                            merge_files = FALSE,
                             include_qs_concentrations = FALSE) {
 
   # Split input into files and directories
@@ -63,12 +81,12 @@ import_QS_files <- function(paths,
       NumberOfMergedWells = stringr::str_count(ifelse(is.na(.data$MergedWells), "", .data$MergedWells), pattern = ",") + 1
     )
 
-  if (merge_wells == "Yes") {
+  if (merge_wells) {
     df <- df %>%
       dplyr::filter(
         !grepl("M", .data$Well)
       ) %>%
-      dplyr::group_by(.data$Sample) %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
       dplyr::summarise(
         FileName = paste0(unique(.data$FileName), collapse = ","),
         Target = paste0(unique(.data$Target), collapse = ","),
@@ -103,25 +121,3 @@ import_QS_files <- function(paths,
 
   return(df)
 }
-
-
-
-paths <- list.files("~/Downloads/Tenna example/data/", full.names = TRUE)
-
-import_QS_files(paths)
-
-annotations <- data.frame(
-  project = "Horse",
-  analysis_time = Sys.time()
-)
-
-sample_annotations <- data.frame(
-  Sample = c("Plasma_A", "Plasma_B"),
-  my_annotation = c("My favorite", "Just another sample")
-)
-
-annotated_import <- import_QS_files(paths = paths, annotations = annotations, sample_annotations = sample_annotations)
-
-# View(annotated_import)
-
-annotated_import <- import_QS_files(paths = paths, annotations = annotations, sample_annotations = sample_annotations, merge_wells = "Yes")

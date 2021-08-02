@@ -51,15 +51,15 @@ full_log_lik_train <- function(par,
 # LogLik for optimizing l and r in test sample
 full_log_lik_test <- function(par, l_est,
                               N_WT_only, N_M_only, N_d_neg, N_d_pos,
-                              a_train_est, b_train_est, c_train_est) {
+                              a_est, b_est, c_est) {
   r_est <- exp(par)
 
   log_lik <- full_log_lik(
     l_vec = l_est,
     r_vec = r_est,
-    a = a_train_est,
-    b = b_train_est,
-    c = c_train_est,
+    a = a_est,
+    b = b_est,
+    c = c_est,
     N_WT_only_vec = N_WT_only,
     N_M_only_vec = N_M_only,
     N_d_neg_vec = N_d_neg,
@@ -275,7 +275,7 @@ grad_full_log_lik_train <- function(par,
 # Gradient of LogLik for optimizing r and l in test sample
 grad_full_log_lik_test <- function(par, l_est,
                                    N_WT_only, N_M_only, N_d_neg, N_d_pos,
-                                   a_train_est, b_train_est, c_train_est) {
+                                   a_est, b_est, c_est) {
   # Unpack parameter
   r_est <- exp(par)
 
@@ -283,9 +283,9 @@ grad_full_log_lik_test <- function(par, l_est,
   d_dr <- dr_full_log_lik(
     l = l_est,
     r = r_est,
-    a = a_train_est,
-    b = b_train_est,
-    c = c_train_est,
+    a = a_est,
+    b = b_est,
+    c = c_est,
     N_WT_only = N_WT_only,
     N_M_only = N_M_only,
     N_d_neg = N_d_neg,

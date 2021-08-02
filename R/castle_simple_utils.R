@@ -59,12 +59,12 @@ estimate_l <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos) {
 
 estimate_r <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
                        l_est,
-                       a_train_est, b_train_est, c_train_est) {
+                       a_est, b_est, c_est) {
 
   # Get starting value of r (rough estimates)
   r_start_init <- log((N_M_only + N_d_pos) / (N_d_neg + N_WT_only) + 1)
   # Correct with error estimates
-  r_start_cor <- r_start_init - (a_train_est + b_train_est * l_est + c_train_est * l_est)
+  r_start_cor <- r_start_init - (a_est + b_est * l_est + c_est * l_est)
   # Truncate r at 0, as this is the minimum possible value in the model
   r_start <- max(r_start_cor, MIN_START_PAR)
 
@@ -79,9 +79,9 @@ estimate_r <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
     N_M_only = N_M_only,
     N_d_neg = N_d_neg,
     N_d_pos = N_d_pos,
-    a_train_est = a_train_est,
-    b_train_est = b_train_est,
-    c_train_est = c_train_est,
+    a_est = a_est,
+    b_est = b_est,
+    c_est = c_est,
     control = list(
       fnscale = -1,
       reltol = RELTOL
@@ -90,6 +90,37 @@ estimate_r <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
 
   # Get optimal value of r
   r_est <- exp(optim_res$par)
+
+  # Check if r=0 gives a better likelihood:
+  # Calculate LL for simple model (H0)
+  LL_0 <- full_log_lik(
+    l_vec = l_est,
+    r_vec = 0,
+    a = a_est,
+    b = b_est,
+    c = c_est,
+    N_WT_only_vec = N_WT_only,
+    N_M_only_vec = N_M_only,
+    N_d_neg_vec = N_d_neg,
+    N_d_pos_vec = N_d_pos
+  )
+
+  # Calculate LL for simple model (H0)
+  LL_A <- full_log_lik(
+    l_vec = l_est,
+    r_vec = r_est,
+    a = a_est,
+    b = b_est,
+    c = c_est,
+    N_WT_only_vec = N_WT_only,
+    N_M_only_vec = N_M_only,
+    N_d_neg_vec = N_d_neg,
+    N_d_pos_vec = N_d_pos
+  )
+
+  if (LL_A < LL_0) {
+    r_est <- 0
+  }
 
   return(r_est)
 }
@@ -224,10 +255,10 @@ test_r_equal_0_simple <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
                                   l_est, r_est,
                                   a_est, b_est, c_est,
                                   include_mutant_CI, alpha) {
-  # Helper functions
-  LL_A <- full_log_lik(
+  # Calculate LL for simple model (H0)
+  LL_0 <- full_log_lik(
     l_vec = l_est,
-    r_vec = r_est,
+    r_vec = 0,
     a = a_est,
     b = b_est,
     c = c_est,
@@ -238,9 +269,9 @@ test_r_equal_0_simple <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
   )
 
   # Calculate LL for simple model (H0)
-  LL_0 <- full_log_lik(
+  LL_A <- full_log_lik(
     l_vec = l_est,
-    r_vec = 0,
+    r_vec = r_est,
     a = a_est,
     b = b_est,
     c = c_est,
@@ -258,7 +289,7 @@ test_r_equal_0_simple <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
 
   # Gather results
   total_droplets <- N_WT_only + N_M_only + N_d_neg + N_d_pos
-  allele_frequency = r_est / (r_est + l_est)
+  allele_frequency <- r_est / (r_est + l_est)
   estimated_total_mutant_molecules <- r_est * total_droplets
   estimated_total_wildtype_molecules <- l_est * total_droplets
   mutation_detected <- p_val < alpha
@@ -307,8 +338,8 @@ test_r_equal_0_simple <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
       mutant_molecules_per_droplet_CI_lower = r_CI_lower,
       mutant_molecules_per_droplet_CI_upper = r_CI_upper,
       # Allele frequency
-      allele_frequency_CI_lower = r_CI_lower / (r_CI_lower + l_est),
-      allele_frequency_CI_upper = r_CI_upper / (r_CI_upper + l_est),
+      allele_frequency_CI_lower = r_CI_lower / (r_CI_lower + l_est + TOL_0),
+      allele_frequency_CI_upper = r_CI_upper / (r_CI_upper + l_est + TOL_0),
       # Total number of molecules
       total_mutant_molecules_CI_lower = total_mutant_molecules_CI_lower,
       total_mutant_molecules_CI_upper = total_mutant_molecules_CI_upper

@@ -186,9 +186,9 @@ estimate_r_integrated <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
     N_d_neg = N_d_neg,
     N_d_pos = N_d_pos,
     l_est = l_est,
-    a_train_est = integrated_model$a_est,
-    b_train_est = integrated_model$b_est,
-    c_train_est = integrated_model$c_est
+    a_est = integrated_model$a_est,
+    b_est = integrated_model$b_est,
+    c_est = integrated_model$c_est
   ) %>% max(MIN_START_PAR)
 
   # Now optimize the integrated likelihood numerically
@@ -215,7 +215,8 @@ estimate_r_integrated <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
   r_est <- exp(optim_res_int$par)
 
   # If likelihood is greater at r=0 -> change value
-  if (optim_res_int$value < integrated_log_lik(
+  LL_A <- optim_res_int$value
+  LL_0 <- integrated_log_lik(
     l = l_est,
     r = 0,
     N_WT_only = N_WT_only,
@@ -224,7 +225,8 @@ estimate_r_integrated <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
     N_d_pos = N_d_pos,
     abc_grid_train_log_lik = abc_grid_train_log_lik,
     abc_grid = abc_grid
-  )) {
+  )
+  if (LL_A < LL_0) {
     r_est <- 0
   }
 
@@ -268,7 +270,7 @@ test_r_equal_0_integrated <- function(l_est, r_est,
 
   # Gather results
   total_droplets <- N_WT_only + N_M_only + N_d_neg + N_d_pos
-  allele_frequency = r_est / (r_est + l_est)
+  allele_frequency <- r_est / (r_est + l_est + TOL_0)
   estimated_total_mutant_molecules <- r_est * total_droplets
   estimated_total_wildtype_molecules <- l_est * total_droplets
   mutation_detected <- p_val < alpha
@@ -311,7 +313,7 @@ test_r_equal_0_integrated <- function(l_est, r_est,
     total_mutant_molecules_CI_lower <- r_CI_lower * total_droplets
     total_mutant_molecules_CI_upper <- r_CI_upper * total_droplets
 
-    1 / (1 + l_est/r_est)
+    1 / (1 + l_est / r_est)
 
     # Add CI's to results
     res <- append(res, list(
@@ -319,8 +321,8 @@ test_r_equal_0_integrated <- function(l_est, r_est,
       mutant_molecules_per_droplet_CI_lower = r_CI_lower,
       mutant_molecules_per_droplet_CI_upper = r_CI_upper,
       # Allele frequency
-      allele_frequency_CI_lower = r_CI_lower / (r_CI_lower + l_est),
-      allele_frequency_CI_upper = r_CI_upper / (r_CI_upper + l_est),
+      allele_frequency_CI_lower = r_CI_lower / (r_CI_lower + l_est + TOL_0),
+      allele_frequency_CI_upper = r_CI_upper / (r_CI_upper + l_est + TOL_0),
       # Total number of molecules
       total_mutant_molecules_CI_lower = total_mutant_molecules_CI_lower,
       total_mutant_molecules_CI_upper = total_mutant_molecules_CI_upper
