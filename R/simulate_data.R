@@ -34,10 +34,10 @@ simulate_droplet_counts <- function(l, r, a, b, c, n_drops, n_samples = 1) {
 
   # Collect data and output
   df_sim <- data.frame(
-    N_d_neg = sim[1, ],
-    N_d_pos = sim[2, ],
-    N_WT_only = sim[3, ],
-    N_M_only = sim[4, ]
+    DoubleNegativeDroplets = sim[1, ],
+    DoublePositiveDroplets = sim[2, ],
+    WildtypeOnlyDroplets = sim[3, ],
+    MutantOnlyDroplets = sim[4, ]
   )
 
   return(df_sim)
@@ -66,10 +66,10 @@ simulate_molecule_counts <- function(l, r, a, b, c, n_drops) {
   # Summarize data
   summarized_data <- indiv_droplet_data %>%
     dplyr::summarise(
-      N_d_neg = sum(!.data$WT_ch & !.data$M_ch),
-      N_d_pos = sum(.data$WT_ch & .data$M_ch),
-      N_WT_only = sum(.data$WT_ch & !.data$M_ch),
-      N_M_only = sum(!.data$WT_ch & .data$M_ch)
+      DoubleNegativeDroplets = sum(!.data$WT_ch & !.data$M_ch),
+      DoublePositiveDroplets = sum(.data$WT_ch & .data$M_ch),
+      WildtypeOnlyDroplets = sum(.data$WT_ch & !.data$M_ch),
+      MutantOnlyDroplets = sum(!.data$WT_ch & .data$M_ch)
     )
 
   return(list(

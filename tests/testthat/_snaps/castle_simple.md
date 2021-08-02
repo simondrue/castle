@@ -21,9 +21,12 @@
     Code
       multiple_test_res
     Output
-        N_d_neg N_d_pos N_WT_only N_M_only mutant_molecules_per_droplet
-      1    7521     644      4889      946                 0.1006261466
-      2    8466     152      5252      130                 0.0004842163
+        DoubleNegativeDroplets DoublePositiveDroplets WildtypeOnlyDroplets
+      1                   7521                    644                 4889
+      2                   8466                    152                 5252
+        MutantOnlyDroplets mutant_molecules_per_droplet
+      1                946                 0.1006261466
+      2                130                 0.0004842163
         wildtype_molecules_per_droplet     p_val test_statistic mutation_detected
       1                      0.5028811 0.0000000   3172.7099905              TRUE
       2                      0.4877604 0.6735607      0.1774652             FALSE
@@ -34,7 +37,7 @@
       1                            0.09480199                           0.106645448
       2                            0.00000000                           0.002857597
         allele_frequency_CI_lower allele_frequency_CI_upper
-      1                 0.1586158               0.174964410
+      1                 0.1586158               0.174964409
       2                 0.0000000               0.005824486
         total_mutant_molecules_CI_lower total_mutant_molecules_CI_upper
       1                        1327.228                      1493.03627
@@ -51,9 +54,12 @@
     Code
       no_CIs_res
     Output
-        N_d_neg N_d_pos N_WT_only N_M_only mutant_molecules_per_droplet
-      1    7521     644      4889      946                 0.1006261466
-      2    8466     152      5252      130                 0.0004842163
+        DoubleNegativeDroplets DoublePositiveDroplets WildtypeOnlyDroplets
+      1                   7521                    644                 4889
+      2                   8466                    152                 5252
+        MutantOnlyDroplets mutant_molecules_per_droplet
+      1                946                 0.1006261466
+      2                130                 0.0004842163
         wildtype_molecules_per_droplet     p_val test_statistic mutation_detected
       1                      0.5028811 0.0000000   3172.7099905              TRUE
       2                      0.4877604 0.6735607      0.1774652             FALSE

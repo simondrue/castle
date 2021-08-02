@@ -28,10 +28,10 @@ train_integrated_ddpcr_model <- function(training_samples,
   check_input_samples(training_samples)
 
   # Unpack data
-  N_WT_only_vec <- training_samples$N_WT_only
-  N_M_only_vec <- training_samples$N_M_only
-  N_d_neg_vec <- training_samples$N_d_neg
-  N_d_pos_vec <- training_samples$N_d_pos
+  N_WT_only_vec <- training_samples$WildtypeOnlyDroplets
+  N_M_only_vec <- training_samples$MutantOnlyDroplets
+  N_d_neg_vec <- training_samples$DoubleNegativeDroplets
+  N_d_pos_vec <- training_samples$DoublePositiveDroplets
 
   # Train parameters (get MLE on training data)
   simple_model <- train_simple_ddpcr_model(
@@ -140,10 +140,10 @@ test_tumor_sample_integrated <- function(test_samples,
     test_sample <- test_samples[i, ]
 
     # Data
-    N_WT_only <- test_sample$N_WT_only
-    N_M_only <- test_sample$N_M_only
-    N_d_neg <- test_sample$N_d_neg
-    N_d_pos <- test_sample$N_d_pos
+    N_WT_only <- test_sample$WildtypeOnlyDroplets
+    N_M_only <- test_sample$MutantOnlyDroplets
+    N_d_neg <- test_sample$DoubleNegativeDroplets
+    N_d_pos <- test_sample$DoublePositiveDroplets
 
     # Model parameters
     abc_grid <- integrated_model$abc_grid

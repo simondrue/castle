@@ -419,9 +419,12 @@
     Code
       multiple_test_res
     Output
-        N_d_neg N_d_pos N_WT_only N_M_only mutant_molecules_per_droplet
-      1    7521     644      4889      946                 0.1006258337
-      2    8466     152      5252      130                 0.0004839021
+        DoubleNegativeDroplets DoublePositiveDroplets WildtypeOnlyDroplets
+      1                   7521                    644                 4889
+      2                   8466                    152                 5252
+        MutantOnlyDroplets mutant_molecules_per_droplet
+      1                946                 0.1006258337
+      2                130                 0.0004839021
         wildtype_molecules_per_droplet     p_val test_statistic mutation_detected
       1                      0.5028811 0.0000000   3101.0031047              TRUE
       2                      0.4877604 0.6756611      0.1750512             FALSE

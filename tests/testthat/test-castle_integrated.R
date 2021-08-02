@@ -2,10 +2,10 @@ test_that(
   "training model - snapshot",
   {
     training_samples <- data.frame(
-      N_WT_only = c(10, 20, 30, 0),
-      N_M_only = c(1, 2, 3, 0),
-      N_d_neg = c(30, 30, 30, 30),
-      N_d_pos = c(1, 1, 1, 0)
+      WildtypeOnlyDroplets = c(10, 20, 30, 0),
+      MutantOnlyDroplets = c(1, 2, 3, 0),
+      DoubleNegativeDroplets = c(30, 30, 30, 30),
+      DoublePositiveDroplets = c(1, 1, 1, 0)
     )
 
     abc_grid_resolution <- 7

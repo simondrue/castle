@@ -18,10 +18,10 @@ train_simple_ddpcr_model <- function(training_samples) {
   check_input_samples(training_samples)
 
   # Unpack data
-  N_WT_only_vec <- training_samples$N_WT_only
-  N_M_only_vec <- training_samples$N_M_only
-  N_d_neg_vec <- training_samples$N_d_neg
-  N_d_pos_vec <- training_samples$N_d_pos
+  N_WT_only_vec <- training_samples$WildtypeOnlyDroplets
+  N_M_only_vec <- training_samples$MutantOnlyDroplets
+  N_d_neg_vec <- training_samples$DoubleNegativeDroplets
+  N_d_pos_vec <- training_samples$DoublePositiveDroplets
 
   # Estimate lambdas
   l_est_vec <- log((N_WT_only_vec + N_d_pos_vec) / (N_d_neg_vec + N_M_only_vec) + 1)
@@ -106,14 +106,14 @@ test_tumor_sample_simple <- function(test_samples,
     test_sample <- test_samples[i, ]
 
     # Unpack parameters
-    N_WT_only <- test_sample$N_WT_only
-    N_M_only <- test_sample$N_M_only
-    N_d_neg <- test_sample$N_d_neg
-    N_d_pos <- test_sample$N_d_pos
+    N_WT_only <- test_sample$WildtypeOnlyDroplets
+    N_M_only <- test_sample$MutantOnlyDroplets
+    N_d_neg <- test_sample$DoubleNegativeDroplets
+    N_d_pos <- test_sample$DoublePositiveDroplets
 
-    a_train_est <- simple_model$a_est
-    b_train_est <- simple_model$b_est
-    c_train_est <- simple_model$c_est
+    a_est <- simple_model$a_est
+    b_est <- simple_model$b_est
+    c_est <- simple_model$c_est
 
     # Estimate parameters
     l_est <- estimate_l(
@@ -129,9 +129,9 @@ test_tumor_sample_simple <- function(test_samples,
       N_d_neg = N_d_neg,
       N_d_pos = N_d_pos,
       l_est = l_est,
-      a_train_est = a_train_est,
-      b_train_est = b_train_est,
-      c_train_est = c_train_est
+      a_est = a_est,
+      b_est = b_est,
+      c_est = c_est
     )
 
     res <- test_r_equal_0_simple(
@@ -140,9 +140,9 @@ test_tumor_sample_simple <- function(test_samples,
       N_d_neg = N_d_neg,
       N_d_pos = N_d_pos,
       l_est = l_est,
-      a_est = a_train_est,
-      b_est = b_train_est,
-      c_est = c_train_est,
+      a_est = a_est,
+      b_est = b_est,
+      c_est = c_est,
       r_est = r_est,
       include_mutant_CI = include_mutant_CI,
       alpha = alpha

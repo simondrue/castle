@@ -20,21 +20,19 @@ sum_log_p <- function(lp_vec) {
 
 check_input_samples <- function(samples) {
   # Check if expected columns are present
-  if (!all(c("N_WT_only", "N_M_only", "N_d_neg", "N_d_pos") %in% colnames(samples))) {
+  expected_columns = c("WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets", "DoublePositiveDroplets")
+  if (!all(expected_columns %in% colnames(samples))) {
     missing_cols <-
-      setdiff(
-        c("N_WT_only", "N_M_only", "N_d_neg", "N_d_pos"),
-        colnames(samples)
-      )
-    stop(paste(missing_cols, "are missing from test_samples."))
+      setdiff(expected_columns, colnames(samples))
+    stop(paste("[", paste(missing_cols, collapse = ", "), "], are missing from test_samples.", collapse = ""))
   }
 
   # Check if any samples are empty
   totals <-
     samples %>%
     dplyr::mutate(
-      total_droplets = .data$N_WT_only + .data$N_M_only + .data$N_d_neg + .data$N_d_pos,
-      total_WT_negative = .data$N_M_only + .data$N_d_neg
+      total_droplets = .data$WildtypeOnlyDroplets + .data$MutantOnlyDroplets + .data$DoubleNegativeDroplets + .data$DoublePositiveDroplets,
+      total_WT_negative = .data$MutantOnlyDroplets + .data$DoubleNegativeDroplets
     )
 
   if (any(totals$total_droplets == 0)) {

@@ -16,10 +16,10 @@ test_that("sum_log_p", {
 test_that("check_input_samples", {
   # Empty samples
   empty_sample <- data.frame(
-    N_WT_only = c(0, 1, 0),
-    N_M_only = c(0, 1, 0),
-    N_d_neg = c(0, 1, 0),
-    N_d_pos = c(0, 1, 0)
+    WildtypeOnlyDroplets = c(0, 1, 0),
+    MutantOnlyDroplets = c(0, 1, 0),
+    DoubleNegativeDroplets = c(0, 1, 0),
+    DoublePositiveDroplets = c(0, 1, 0)
   )
 
   expect_error(
@@ -31,9 +31,9 @@ test_that("check_input_samples", {
 
   # Incomplete data
   incomplete_sample <- data.frame(
-    N_WT_only = 1,
-    N_M_only = 1,
-    N_d_neg = 1
+    WildtypeOnlyDroplets = 1,
+    MutantOnlyDroplets = 1,
+    DoubleNegativeDroplets = 1
   )
 
   expect_error(
@@ -45,10 +45,10 @@ test_that("check_input_samples", {
 
   # No wild type negative
   no_WT_sample <- data.frame(
-    N_WT_only = 1,
-    N_M_only = 0,
-    N_d_neg = 0,
-    N_d_pos = 1
+    WildtypeOnlyDroplets = 1,
+    MutantOnlyDroplets = 0,
+    DoubleNegativeDroplets = 0,
+    DoublePositiveDroplets = 1
   )
 
   expect_error(
