@@ -115,7 +115,7 @@ get_r_CI_integrated <- function(r_est, l_est,
                                 N_M_only,
                                 N_d_neg,
                                 N_d_pos,
-                                alpha = 0.05) {
+                                alpha) {
 
   # LLR with integrated likelihood function
   # Calculate LL for full (alternative) model - Note this is constant
@@ -234,7 +234,7 @@ estimate_r_integrated <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
 test_r_equal_0_integrated <- function(l_est, r_est,
                                       N_WT_only, N_M_only, N_d_neg, N_d_pos,
                                       abc_grid_train_log_lik, abc_grid,
-                                      include_r_CI, alpha) {
+                                      include_mutant_CI, alpha) {
   # Test hypothesis H0: r == 0 vs HA: r > 0
   # LLR with integrated likelihood function
 
@@ -264,29 +264,32 @@ test_r_equal_0_integrated <- function(l_est, r_est,
 
   # Get test statistic and p-value
   r_LLR_test_stat <- -2 * (LL_0 - LL_A)
-  r_less_than_0_pval <- 1 - stats::pchisq(r_LLR_test_stat, 1)
+  p_val <- 1 - stats::pchisq(r_LLR_test_stat, 1)
 
   # Gather results
   total_droplets <- N_WT_only + N_M_only + N_d_neg + N_d_pos
-  total_tumor_molecules_expected <- r_est * total_droplets
-  is_tumor_positive <- r_less_than_0_pval < alpha
+  allele_frequency = r_est / (r_est + l_est)
+  estimated_total_mutant_molecules <- r_est * total_droplets
+  estimated_total_wildtype_molecules <- l_est * total_droplets
+  mutation_detected <- p_val < alpha
 
   # Collect results
   res <- list(
     # Estimated values for r
-    r_est = r_est,
+    mutant_molecules_per_droplet = r_est,
     # Estimated values for l:
-    l_est = l_est,
+    wildtype_molecules_per_droplet = l_est,
     # Test statistics
-    pval_r_leq_0 = r_less_than_0_pval,
-    r_LLR_test_stat = r_LLR_test_stat,
+    p_val = p_val,
+    test_statistic = r_LLR_test_stat,
     # Other results:
-    is_tumor_positive = is_tumor_positive,
-    total_tumor_molecules_expected = total_tumor_molecules_expected,
-    total_droplets = total_droplets
+    mutation_detected = mutation_detected,
+    allele_frequency = allele_frequency,
+    total_mutant_molecules = estimated_total_mutant_molecules,
+    total_wildtype_molecules = estimated_total_wildtype_molecules
   )
 
-  if (include_r_CI) {
+  if (include_mutant_CI) {
     # Find bounds on r
     r_CI <- get_r_CI_integrated(
       r_est = r_est,
@@ -305,17 +308,22 @@ test_r_equal_0_integrated <- function(l_est, r_est,
     r_CI_upper <- r_CI$upper
 
     # Calculate CI on the number of "real" tumor molecules
-    total_tumor_molecules_CI_lower <- r_CI_lower * total_droplets
-    total_tumor_molecules_CI_upper <- r_CI_upper * total_droplets
+    total_mutant_molecules_CI_lower <- r_CI_lower * total_droplets
+    total_mutant_molecules_CI_upper <- r_CI_upper * total_droplets
+
+    1 / (1 + l_est/r_est)
 
     # Add CI's to results
     res <- append(res, list(
       # Estimated values for r
-      r_CI_lower = r_CI_lower,
-      r_CI_upper = r_CI_upper,
+      mutant_molecules_per_droplet_CI_lower = r_CI_lower,
+      mutant_molecules_per_droplet_CI_upper = r_CI_upper,
+      # Allele frequency
+      allele_frequency_CI_lower = r_CI_lower / (r_CI_lower + l_est),
+      allele_frequency_CI_upper = r_CI_upper / (r_CI_upper + l_est),
       # Total number of molecules
-      total_tumor_molecules_CI_lower = total_tumor_molecules_CI_lower,
-      total_tumor_molecules_CI_upper = total_tumor_molecules_CI_upper
+      total_mutant_molecules_CI_lower = total_mutant_molecules_CI_lower,
+      total_mutant_molecules_CI_upper = total_mutant_molecules_CI_upper
     ))
   }
 

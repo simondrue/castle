@@ -75,7 +75,7 @@ test_that(
       integrated_model = trained_integrated_model
     )
 
-    expect_true(positive_test_res$is_tumor_positive)
+    expect_true(positive_test_res$mutation_detected)
 
 
     # Negative
@@ -84,7 +84,7 @@ test_that(
       integrated_model = trained_integrated_model
     )
 
-    expect_false(negative_test_res$is_tumor_positive)
+    expect_false(negative_test_res$mutation_detected)
 
     # Multiple samples
     multiple_test_res <- test_tumor_sample_integrated(
@@ -94,6 +94,8 @@ test_that(
 
     # Dimensions
     expect_equal(nrow(multiple_test_res), 2)
+    expect_snapshot(multiple_test_res)
+
 
     # Consistent with single tests
     expect_true(all(multiple_test_res[1, ] == positive_test_res))

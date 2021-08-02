@@ -414,3 +414,33 @@
       [337] -160.7631 -163.2968 -165.8808 -168.5068 -171.1687 -173.8617 -176.5820
       
 
+# simulation - training - test
+
+    Code
+      multiple_test_res
+    Output
+        N_d_neg N_d_pos N_WT_only N_M_only mutant_molecules_per_droplet
+      1    7521     644      4889      946                 0.1006258337
+      2    8466     152      5252      130                 0.0004839021
+        wildtype_molecules_per_droplet     p_val test_statistic mutation_detected
+      1                      0.5028811 0.0000000   3101.0031047              TRUE
+      2                      0.4877604 0.6756611      0.1750512             FALSE
+        allele_frequency total_mutant_molecules total_wildtype_molecules
+      1     0.1667351811             1408.76167                 7040.335
+      2     0.0009911067                6.77463                 6828.645
+        mutant_molecules_per_droplet_CI_lower mutant_molecules_per_droplet_CI_upper
+      1                            0.09300436                           0.108582986
+      2                            0.00000000                           0.003658208
+        allele_frequency_CI_lower allele_frequency_CI_upper
+      1                 0.1560776               0.177578689
+      2                 0.0000000               0.007444179
+        total_mutant_molecules_CI_lower total_mutant_molecules_CI_upper
+      1                        1302.061                      1520.16181
+      2                           0.000                        51.21491
+        wildtype_molecules_per_droplet_CI_lower
+      1                               0.4854383
+      2                               0.4706541
+        wildtype_molecules_per_droplet_CI_upper
+      1                               0.5207539
+      2                               0.5052932
+

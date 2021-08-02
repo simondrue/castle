@@ -65,24 +65,27 @@ test_that("simulation - training - test", {
   # Positive
   positive_test_res <- test_tumor_sample_simple(
     test_samples = test_sample_positive,
-    simple_model = trained_model
+    simple_model = trained_model,
+    alpha = 0.05
   )
 
-  expect_true(positive_test_res$is_tumor_positive)
+  expect_true(positive_test_res$mutation_detected)
 
 
   # Negative
   negative_test_res <- test_tumor_sample_simple(
     test_samples = test_sample_negative,
-    simple_model = trained_model
+    simple_model = trained_model,
+    alpha = 0.05
   )
 
-  expect_false(negative_test_res$is_tumor_positive)
+  expect_false(negative_test_res$mutation_detected)
 
   # Multiple samples
   multiple_test_res <- test_tumor_sample_simple(
     test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
-    simple_model = trained_model
+    simple_model = trained_model,
+    alpha = 0.05
   )
 
   # Snapshot
@@ -93,13 +96,14 @@ test_that("simulation - training - test", {
   no_CIs_res <- test_tumor_sample_simple(
     test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
     simple_model = trained_model,
-    include_l_CI = FALSE,
-    include_r_CI = FALSE
+    include_wildtype_CI = FALSE,
+    include_mutant_CI = FALSE,
+    alpha = 0.05
   )
 
   expect_false(
     any(
-      c("r_CI_lower", "r_CI_upper", "l_CI_lower", "l_CI_upper") %in% colnames(no_CIs_res)
+      c("r_CI_lower", "r_CI_upper", "wildtype_molecules_per_droplet_CI_lower", "wildtype_molecules_per_droplet_CI_upper") %in% colnames(no_CIs_res)
     )
   )
   expect_snapshot(no_CIs_res)
