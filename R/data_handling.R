@@ -68,7 +68,7 @@ import_QS_files <- function(paths,
       "FileName",
       "Well", "Sample", "Ch1TargetType", "Ch2TargetType", "Target",
       "Ch1+Ch2-", "Ch1-Ch2+", "Ch1-Ch2-", "Ch1+Ch2+",
-      "AcceptedDroplets", "FilePath", "MergedWells"
+      "AcceptedDroplets", "MergedWells"
     ) %>%
     dplyr::rename(
       MutantOnlyDroplets = ifelse(Ch1_is_mutation, "Ch1+Ch2-", "Ch1-Ch2+"),
@@ -100,6 +100,9 @@ import_QS_files <- function(paths,
         NumberOfMergedWells = dplyr::n(),
         MergedWells = paste0(c("(", paste0(c(.data$Well), collapse = ","), ")"), collapse = ""),
         .groups = "drop"
+      ) %>%
+      dplyr::mutate(
+        Well = sprintf("M%02d", dplyr::row_number())
       )
   } else if (merge_wells == "QS") {
     merged_samples <- df %>%
