@@ -8,18 +8,26 @@ train_simple_ddpcr_model(training_samples)
 }
 \arguments{
 \item{training_samples}{\code{data.frame} with cancer negative training
-samples as rows. At least the columns \code{N_WT_only}, \code{N_M_only},
-\code{N_d_neg} and \code{N_d_pos} should be present.}
+  samples as rows. At least the following columns should be present:
+    \itemize{
+      \item{\code{WildtypeOnlyDroplets}}
+      \item{\code{MutantOnlyDroplets}}
+      \item{\code{DoubleNegativeDroplets}}
+      \item{\code{DoublePositiveDroplets}}
+   }
+If data from QuataSoft is available, these can be imported using
+\code{\link{import_QS_files}}.}
 }
 \value{
-List of parameter estimates for the simple CASLTE model. This
-  should be used as input for \code{test_tumor_sample_simple}.
+List of parameter estimates for the simple CASLTE model. This should
+  be used as input for \code{\link{test_tumor_sample_simple}}.
 }
 \description{
-\code{train_simple_ddpcr_model} estimates the parameters of
-  the statistical model for the simple version the CASTLE algorithm based
-  on a set of training samples, assumed to have no mutant DNA present.
+Estimates the parameters of the statistical model for the simple
+  version the CASTLE algorithm based on a set of training samples, assumed to
+  have no mutant DNA present.
 }
 \seealso{
-\code{\link{test_tumor_sample_simple}}
+\code{\link{import_QS_files}},
+  \code{\link{test_tumor_sample_simple}}
 }

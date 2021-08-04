@@ -8,30 +8,37 @@ train_integrated_ddpcr_model(training_samples, abc_grid_resolution = 25)
 }
 \arguments{
 \item{training_samples}{\code{data.frame} with cancer negative training
-samples as rows. At least the columns \code{N_WT_only}, \code{N_M_only},
-\code{N_d_neg} and \code{N_d_pos} should be present.}
+  samples as rows. At least the following columns should be present:
+    \itemize{
+      \item{\code{WildtypeOnlyDroplets}}
+      \item{\code{MutantOnlyDroplets}}
+      \item{\code{DoubleNegativeDroplets}}
+      \item{\code{DoublePositiveDroplets}}
+   }
+If data from QuataSoft is available, these can be imported using
+\code{\link{import_QS_files}}.}
 
 \item{abc_grid_resolution}{The resolution of the 3D-grid on which the
 integrated LR-test statistic is approximated. Default is 25 (equal to a
-grid of 25^3 = 15,625 point).}
+grid of 25^3 = 15,625 points).}
 }
 \value{
 List of parameter estimates for the integrated CASLTE model. This
-  should be used as input for \code{test_tumor_sample_integrated}.
+  should be used as input for \code{\link{test_tumor_sample_integrated}}.
 }
 \description{
-\code{train_integrated_ddpcr_model} estimates the parameters of
-  the statistical model for the integrated version the CASTLE algorithm based
-  on a set of training samples, assumed to have no mutant DNA present.
+Estimates the parameters of the statistical model for the
+  integrated version the CASTLE algorithm based on a set of training samples,
+  assumed to have no mutant DNA present.
 }
 \details{
 In the test an integrated version of the Likelihood Ratio test
   statistic is used, and this is approximated using a Riemann sum on a
   3D-grid. The parameter \code{abc_grid_resolution} controls this
   approximation as the sum is calculated on \code{abc_grid_resolution^3}
-  points. Higher values give better approximation but longer computational
+  points. Higher values give better approximation but longer computation
   times.
 }
 \seealso{
-\code{\link{test_tumor_sample_integrated}}
+\code{\link{import_QS_files}, \link{test_tumor_sample_integrated}}
 }
