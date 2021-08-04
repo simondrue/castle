@@ -1,5 +1,9 @@
 ---
-output: github_document
+output:
+  github_document: 
+    html_preview: true
+    toc: true
+    df_print: paged
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -11,6 +15,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(kableExtra)
 ```
 
 # Welcome to the **CASTLE**
@@ -38,13 +43,14 @@ In this section we will go through how to load a dataset from QuantaSoft, train 
 ```{r, example}
 library(castle)
 library(dplyr)
+library(DT)
 ```
 
 ### Loading QuantaSoft data
 We start by loading a QuantaSoft dataset in \code{.csv}-format using the included \code{import_QS_files}-function. Here we will use the example data included in the package, which can be loaded like this:
 
 ```{r, loading data}
-path_to_my_data = system.file("extdata", "training_data_KRAS_G12D.csv", package = "castle")
+path_to_my_data = system.file("extdata/example_data/", "training_data_KRAS_G12D.csv", package = "castle")
 training_samples = import_QS_files(path_to_my_data)
 ```
 
@@ -84,7 +90,7 @@ To load the data we will again use the function \code{import_QS_files}. But this
 
 ```{r, load test samples}
 path_to_my_test_samples = system.file(
-  "extdata/test_samples", 
+  "extdata/example_data/test_samples", 
   c(
     "patient_1_plasma_KRAS_G12D.csv",
     "patient_2_plasma_KRAS_G12D.csv"

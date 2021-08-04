@@ -1,4 +1,14 @@
 
+-   [Welcome to the **CASTLE**](#welcome-to-the-castle)
+    -   [Installation](#installation)
+    -   [Quickstart guide](#quickstart-guide)
+        -   [Loading QuantaSoft data](#loading-quantasoft-data)
+        -   [Training a model for CASTLE](#training-a-model-for-castle)
+        -   [Testing some samples with
+            CASTLE](#testing-some-samples-with-castle)
+    -   [Note](#note)
+    -   [Simulating data](#simulating-data)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Welcome to the **CASTLE**
@@ -37,12 +47,16 @@ library(castle)
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
+#> The following object is masked from 'package:kableExtra':
+#> 
+#>     group_rows
 #> The following objects are masked from 'package:stats':
 #> 
 #>     filter, lag
 #> The following objects are masked from 'package:base':
 #> 
 #>     intersect, setdiff, setequal, union
+library(DT)
 ```
 
 ### Loading QuantaSoft data
@@ -52,19 +66,263 @@ We start by loading a QuantaSoft dataset in -format using the included
 which can be loaded like this:
 
 ``` r
-path_to_my_data = system.file("extdata", "training_data_KRAS_G12D.csv", package = "castle")
+path_to_my_data = system.file("extdata/example_data/", "training_data_KRAS_G12D.csv", package = "castle")
 training_samples = import_QS_files(path_to_my_data)
 ```
 
 The first 5 samples in looks like this:
-
-| Sample     | FileName                       | Target          | Ch1TargetType | Ch2TargetType | WildtypeOnlyDroplets | MutantOnlyDroplets | DoubleNegativeDroplets | DoublePositiveDroplets | TotalDroplets | NumberOfMergedWells | MergedWells |
-|:-----------|:-------------------------------|:----------------|:--------------|:--------------|---------------------:|-------------------:|-----------------------:|-----------------------:|--------------:|--------------------:|:------------|
-| NC20\_150  | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                11005 |                  0 |                   2415 |                      0 |         13420 |                   1 | (A01)       |
-| NC20\_24   | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 4040 |                  0 |                  12458 |                      1 |         16499 |                   1 | (F05)       |
-| NC20\_3.84 | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                  463 |                  0 |                  17966 |                      0 |         18429 |                   1 | (D10)       |
-| NC20\_60   | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 7283 |                  0 |                   6762 |                      1 |         14046 |                   1 | (C03)       |
-| NC20\_9.6  | training\_data\_KRAS\_G12D.csv | KRAS G12D (FAM) | Unknown       | Unknown       |                 1547 |                  0 |                  14554 |                      1 |         16102 |                   1 | (A08)       |
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+FileName
+</th>
+<th style="text-align:left;">
+Well
+</th>
+<th style="text-align:left;">
+Sample
+</th>
+<th style="text-align:left;">
+Ch1TargetType
+</th>
+<th style="text-align:left;">
+Ch2TargetType
+</th>
+<th style="text-align:left;">
+Target
+</th>
+<th style="text-align:right;">
+MutantOnlyDroplets
+</th>
+<th style="text-align:right;">
+WildtypeOnlyDroplets
+</th>
+<th style="text-align:right;">
+DoubleNegativeDroplets
+</th>
+<th style="text-align:right;">
+DoublePositiveDroplets
+</th>
+<th style="text-align:right;">
+TotalDroplets
+</th>
+<th style="text-align:left;">
+MergedWells
+</th>
+<th style="text-align:right;">
+NumberOfMergedWells
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+training\_data\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+A01
+</td>
+<td style="text-align:left;">
+NC20\_150
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+KRAS G12D (FAM)
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11005
+</td>
+<td style="text-align:right;">
+2415
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13420
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+training\_data\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+B01
+</td>
+<td style="text-align:left;">
+NC21\_150
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+KRAS G12D (FAM)
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+8336
+</td>
+<td style="text-align:right;">
+1534
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+9870
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+training\_data\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+C01
+</td>
+<td style="text-align:left;">
+NC22\_150
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+KRAS G12D (FAM)
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9563
+</td>
+<td style="text-align:right;">
+2041
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11605
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+training\_data\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+D01
+</td>
+<td style="text-align:left;">
+NC23\_150
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+KRAS G12D (FAM)
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13180
+</td>
+<td style="text-align:right;">
+183
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13363
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+training\_data\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+E01
+</td>
+<td style="text-align:left;">
+NC24\_150
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+KRAS G12D (FAM)
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+9421
+</td>
+<td style="text-align:right;">
+1487
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10908
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
 
 Note that besides some metadata (filename, target etc.) for each sample,
 the columns “WildtypeOnlyDroplets”, “MutantOnlyDroplets”,
@@ -116,7 +374,7 @@ files can also be merged using the flag if necessary.
 
 ``` r
 path_to_my_test_samples = system.file(
-  "extdata/test_samples", 
+  "extdata/example_data/test_samples", 
   c(
     "patient_1_plasma_KRAS_G12D.csv",
     "patient_2_plasma_KRAS_G12D.csv"
@@ -126,22 +384,627 @@ path_to_my_test_samples = system.file(
 test_samples = import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
 ```
 
-| Sample           | FileName                           | Target        | Ch1TargetType    | Ch2TargetType    | WildtypeOnlyDroplets | MutantOnlyDroplets | DoubleNegativeDroplets | DoublePositiveDroplets | TotalDroplets | NumberOfMergedWells | MergedWells               |
-|:-----------------|:-----------------------------------|:--------------|:-----------------|:-----------------|---------------------:|-------------------:|-----------------------:|-----------------------:|--------------:|--------------------:|:--------------------------|
-| Negative Control | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4082 |                  0 |                  12254 |                      1 |         16337 |                   1 | (G02)                     |
-| Negative Control | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4876 |                  0 |                  13350 |                      1 |         18227 |                   1 | (G02)                     |
-| NTC              | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | NTC              | NTC              |                    0 |                  0 |                  15899 |                      0 |         15899 |                   1 | (A03)                     |
-| NTC              | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | NTC              | NTC              |                    1 |                  0 |                  13194 |                      0 |         13195 |                   1 | (A03)                     |
-| Patient1 PBL     | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 4012 |                  0 |                  11927 |                      0 |         15939 |                   1 | (F02)                     |
-| Patient1 PlasmaA | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                17647 |                 20 |                  70449 |                      2 |         88118 |                   6 | (A01,B01,C01,D01,E01,F01) |
-| Patient1 PlasmaB | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                58635 |                  1 |                  33256 |                      5 |         91897 |                   6 | (G01,H01,A02,B02,C02,D02) |
-| Patient1 tumor   | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 1625 |               1197 |                  13647 |                    130 |         16599 |                   1 | (E02)                     |
-| Patient2 PBL     | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Negative Control | Positive Control |                 3734 |                  0 |                  12900 |                      2 |         16636 |                   1 | (F02)                     |
-| Patient2 PlasmaA | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                 8885 |                350 |                  88100 |                     26 |         97361 |                   6 | (A01,B01,C01,D01,E01,F01) |
-| Patient2 PlasmaB | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Unknown          | Unknown          |                20069 |                  1 |                  71500 |                      1 |         91571 |                   6 | (G01,H01,A02,B02,C02,D02) |
-| Patient2 tumor   | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 1744 |               2403 |                  10607 |                    290 |         15044 |                   1 | (E02)                     |
-| Positive Control | patient\_1\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 2647 |                897 |                  13468 |                    191 |         17203 |                   1 | (H02)                     |
-| Positive Control | patient\_2\_plasma\_KRAS\_G12D.csv | KRAS G12D mut | Positive Control | Positive Control |                 2932 |               1026 |                  12001 |                    207 |         16166 |                   1 | (H02)                     |
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Sample
+</th>
+<th style="text-align:left;">
+FileName
+</th>
+<th style="text-align:left;">
+Target
+</th>
+<th style="text-align:left;">
+Ch1TargetType
+</th>
+<th style="text-align:left;">
+Ch2TargetType
+</th>
+<th style="text-align:right;">
+WildtypeOnlyDroplets
+</th>
+<th style="text-align:right;">
+MutantOnlyDroplets
+</th>
+<th style="text-align:right;">
+DoubleNegativeDroplets
+</th>
+<th style="text-align:right;">
+DoublePositiveDroplets
+</th>
+<th style="text-align:right;">
+TotalDroplets
+</th>
+<th style="text-align:right;">
+NumberOfMergedWells
+</th>
+<th style="text-align:left;">
+MergedWells
+</th>
+<th style="text-align:left;">
+Well
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+4082
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12254
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+16337
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(G02)
+</td>
+<td style="text-align:left;">
+M01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+4876
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13350
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+18227
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(G02)
+</td>
+<td style="text-align:left;">
+M02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+15899
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+15899
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(A03)
+</td>
+<td style="text-align:left;">
+M03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13194
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13195
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(A03)
+</td>
+<td style="text-align:left;">
+M04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient PBL
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+4012
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11927
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+15939
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(F02)
+</td>
+<td style="text-align:left;">
+M05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient tumor
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+1625
+</td>
+<td style="text-align:right;">
+1197
+</td>
+<td style="text-align:right;">
+13647
+</td>
+<td style="text-align:right;">
+130
+</td>
+<td style="text-align:right;">
+16599
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(E02)
+</td>
+<td style="text-align:left;">
+M06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PBL
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+3734
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12900
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+16636
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(F02)
+</td>
+<td style="text-align:left;">
+M07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PlasmaA
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+8885
+</td>
+<td style="text-align:right;">
+350
+</td>
+<td style="text-align:right;">
+88100
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+97361
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+(A01,B01,C01,D01,E01,F01)
+</td>
+<td style="text-align:left;">
+M08
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PlasmaB
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+20069
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+71500
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+91571
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+(G01,H01,A02,B02,C02,D02)
+</td>
+<td style="text-align:left;">
+M09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 tumor
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+1744
+</td>
+<td style="text-align:right;">
+2403
+</td>
+<td style="text-align:right;">
+10607
+</td>
+<td style="text-align:right;">
+290
+</td>
+<td style="text-align:right;">
+15044
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(E02)
+</td>
+<td style="text-align:left;">
+M10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Plasma\_A
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+17647
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+70449
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+88118
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+(A01,B01,C01,D01,E01,F01)
+</td>
+<td style="text-align:left;">
+M11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Plasma\_B
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+58635
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+33256
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+91897
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+(G01,H01,A02,B02,C02,D02)
+</td>
+<td style="text-align:left;">
+M12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+patient\_1\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+2647
+</td>
+<td style="text-align:right;">
+897
+</td>
+<td style="text-align:right;">
+13468
+</td>
+<td style="text-align:right;">
+191
+</td>
+<td style="text-align:right;">
+17203
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(H02)
+</td>
+<td style="text-align:left;">
+M13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+patient\_2\_plasma\_KRAS\_G12D.csv
+</td>
+<td style="text-align:left;">
+KRAS G12D mut
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+2932
+</td>
+<td style="text-align:right;">
+1026
+</td>
+<td style="text-align:right;">
+12001
+</td>
+<td style="text-align:right;">
+207
+</td>
+<td style="text-align:right;">
+16166
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+(H02)
+</td>
+<td style="text-align:left;">
+M14
+</td>
+</tr>
+</tbody>
+</table>
 
 Note that besides the plasma samples we also have a tumor sample
 (“tumor”) and “PBL” sample for each patient, which can be used as
@@ -159,23 +1022,312 @@ test_res = test_tumor_sample_integrated(
 
 In all of the output from the algorithm is joined with input . Here is
 some of the most relevant output:
-
-| Sample           |    p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
-|:-----------------|----------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
-| Negative Control | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            5.036182 |
-| Negative Control | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            4.919336 |
-| NTC              | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
-| NTC              | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
-| Patient1 PBL     | 1.0000000 | FALSE              |                0.0000000 |                             0.00000 |                            3.317448 |
-| Patient1 PlasmaA | 0.0000000 | TRUE               |               21.3217613 |                            11.35769 |                           35.700996 |
-| Patient1 PlasmaB | 0.3061083 | FALSE              |                1.3922873 |                             0.00000 |                            9.256786 |
-| Patient1 tumor   | 0.0000000 | TRUE               |             1382.9277741 |                          1287.38234 |                         1483.057837 |
-| Patient2 PBL     | 0.4550231 | FALSE              |                0.8848258 |                             0.00000 |                            7.010167 |
-| Patient2 PlasmaA | 0.0000000 | TRUE               |              376.0943247 |                           328.24095 |                          428.382103 |
-| Patient2 PlasmaB | 0.2424636 | FALSE              |                0.8937113 |                             0.00000 |                            6.587480 |
-| Patient2 tumor   | 0.0000000 | TRUE               |             2967.1893131 |                          2822.09013 |                         3117.161312 |
-| Positive Control | 0.0000000 | TRUE               |             1123.7094879 |                          1038.17978 |                         1213.779018 |
-| Positive Control | 0.0000000 | TRUE               |             1282.3544262 |                          1190.51928 |                         1378.763612 |
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Sample
+</th>
+<th style="text-align:right;">
+p\_val
+</th>
+<th style="text-align:left;">
+mutation\_detected
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules\_CI\_lower
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules\_CI\_upper
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+5.036182
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Negative Control
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+4.919336
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+3.317448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTC
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+3.317448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient PBL
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+3.317448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient tumor
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1382.9277741
+</td>
+<td style="text-align:right;">
+1287.38234
+</td>
+<td style="text-align:right;">
+1483.057837
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PBL
+</td>
+<td style="text-align:right;">
+0.4550231
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.8848258
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+7.010167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PlasmaA
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+376.0943247
+</td>
+<td style="text-align:right;">
+328.24095
+</td>
+<td style="text-align:right;">
+428.382103
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 PlasmaB
+</td>
+<td style="text-align:right;">
+0.2424636
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.8937113
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+6.587480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patient2 tumor
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+2967.1893131
+</td>
+<td style="text-align:right;">
+2822.09013
+</td>
+<td style="text-align:right;">
+3117.161312
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Plasma\_A
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+21.3219239
+</td>
+<td style="text-align:right;">
+11.35769
+</td>
+<td style="text-align:right;">
+35.700996
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Plasma\_B
+</td>
+<td style="text-align:right;">
+0.3061083
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1.3922873
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+9.256786
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1123.7094879
+</td>
+<td style="text-align:right;">
+1038.17978
+</td>
+<td style="text-align:right;">
+1213.779018
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Positive Control
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1282.3544328
+</td>
+<td style="text-align:right;">
+1190.51928
+</td>
+<td style="text-align:right;">
+1378.763612
+</td>
+</tr>
+</tbody>
+</table>
 
 ## Note
 
@@ -230,7 +1382,69 @@ sim_test_res = test_tumor_sample_simple(
 )
 ```
 
-| Sample   | p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
-|:---------|-------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
-| Positive |      0 | TRUE               |                 136.2452 |                            108.2398 |                          168.693329 |
-| Negative |      1 | FALSE              |                   0.0000 |                              0.0000 |                            3.317448 |
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Sample
+</th>
+<th style="text-align:right;">
+p\_val
+</th>
+<th style="text-align:left;">
+mutation\_detected
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules\_CI\_lower
+</th>
+<th style="text-align:right;">
+total\_mutant\_molecules\_CI\_upper
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+144.3001
+</td>
+<td style="text-align:right;">
+115.4124
+</td>
+<td style="text-align:right;">
+177.631886
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Negative
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+5.097958
+</td>
+</tr>
+</tbody>
+</table>
