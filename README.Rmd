@@ -2,8 +2,6 @@
 output:
   github_document: 
     html_preview: true
-    toc: true
-    df_print: paged
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -15,7 +13,6 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-library(kableExtra)
 ```
 
 # Welcome to the **CASTLE**
@@ -43,40 +40,43 @@ In this section we will go through how to load a dataset from QuantaSoft, train 
 ```{r, example}
 library(castle)
 library(dplyr)
-library(DT)
 ```
 
 ### Loading QuantaSoft data
-We start by loading a QuantaSoft dataset in \code{.csv}-format using the included \code{import_QS_files}-function. Here we will use the example data included in the package, which can be loaded like this:
+We start by loading a QuantaSoft dataset in \code{.csv}-format using the included \code{import_QS_files}-function. Here we will use the example data included in the package, where we have both negative samples of different concentrations (training samples) and some test samples available for a KRAS G12D assay. The training sampled are loaded like this:
 
 ```{r, loading data}
 path_to_my_data = system.file("extdata/example_data/", "training_data_KRAS_G12D.csv", package = "castle")
 training_samples = import_QS_files(path_to_my_data)
 ```
 
-The first 5 samples in \code{training_samples} looks like this:
+The first 5 samples/wells in \code{training_samples} looks like this:
 ```{r, echo=FALSE}
-knitr::kable(head(training_samples, 5))
+print_df = 
+  training_samples %>%
+  dplyr::mutate(Target = gsub(" ", "_", Target))
+knitr::kable(head(print_df, 5))
 ```
 
-Note that besides some metadata (filename, target etc.) for each sample, the columns "WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets" and "DoublePositiveDroplets" is the count of the four different kinds of droplets for each sample. The following model training and statistical tests are based solely on these counts. 
+Note that besides some metadata (filename, target etc.) for each sample, the datasat contains the columns "WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets" and "DoublePositiveDroplets". These are the counts of the four different kinds of droplets for each sample based on the two signals in Ch1 and Ch2. The following model training and statistical tests are based solely on these counts. 
 
 ### Training a model for CASTLE 
-To train the model we are only interested in the negative plasma samples. Thus we start by removing the negative ("NTC") and positive controls from the dataset:
+To train the model we are only interested in the negative plasma samples. Ideally these should cover the range of different concentrations of DNA that the trained model is expected to encounter in future test samples. Before training we start by removing the empty samples ("NTC") and positive controls from the training dataset we loaded above:
 ```{r, data cleaning}
 # Remove control samples ("NTC" and "Positive Control")
-training_samples_clean = 
+clean_training_samples = 
   training_samples %>%
   filter(
-    !Ch1TargetType %in% c("NTC", "Positive Control"),
-    !Ch2TargetType %in% c("NTC", "Positive Control")
+    !(Ch1TargetType %in% c("NTC", "Positive Control")),
+    !(Ch2TargetType %in% c("NTC", "Positive Control"))
   )
 ```
+
 The cleaned data is then used for model training using the function \code{train_simple_ddpcr_model}:
+
 ```{r, model trainging}
-# Train model
 trained_model <- train_integrated_ddpcr_model(
-  training_samples = training_samples_clean
+  training_samples = clean_training_samples
 )
 ```
 
@@ -84,11 +84,10 @@ The object \code{trained_model} is simply a list of parameters used in the stati
 
 ### Testing some samples with CASTLE 
 
-For testing we will use 2 blood samples from each of 2 patients. These blood samples was taken before (A) and after (B) curative surgery of colorectal cancer. These samples will there for indicate if a mutation was present in the tumor (A) and if the tumor was successfully removed (B). More precisely post operative samples can be used as a follow up to see if a patient gets a relapse.
-
-To load the data we will again use the function \code{import_QS_files}. But this time data from each patient is distributed across multiple wells. These can be merged together using the flag \code{merge_wells = TRUE}. Furthermore samples across multiple files can also be merged using the flag \code{merge_files = TRUE} if necessary. 
+For testing we will use a variety of samples from different 2 patients who have undergone curative surgery of colorectal cancer. We start by loading the data from these patients. To load the data we will again use the function \code{import_QS_files}. But this time data from each patient is distributed across multiple wells. These can be merged together using the flag \code{merge_wells = TRUE}. Furthermore samples across multiple files can also be merged using the flag \code{merge_files = TRUE} if necessary.
 
 ```{r, load test samples}
+# Path to example data in the package 
 path_to_my_test_samples = system.file(
   "extdata/example_data/test_samples", 
   c(
@@ -97,29 +96,78 @@ path_to_my_test_samples = system.file(
   ), 
   package = "castle")
 
-test_samples = import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
+# Import test examples 
+test_samples = 
+  import_QS_files(
+    path_to_my_test_samples, 
+    merge_wells = TRUE)
 ```
-```{r, echo=FALSE}
-knitr::kable(test_samples)
-```
 
-Note that besides the plasma samples we also have a tumor sample ("tumor") and "PBL" sample for each patient, which can be used as positive and negative controls for each patient. Furthermore a negative and positive control is present in each sample.
+To test the samples we use the function \code{test_tumor_sample_integrated} and use the model we trained above:
 
-To test the samples we use the function \code{test_tumor_sample_integrated}:
-
-```{r, testing samples}
+```{r, test test samples}
+# Make calls using CASTLE
 test_res = test_tumor_sample_integrated(
   test_samples = test_samples, 
   integrated_model = trained_model
 )
 ```
-In \code{test_res} all of the output from the algorithm is joined with input \code{data.frame}. Here is some of the most relevant output:
-```{r, echo=FALSE}
-knitr::kable(test_res %>% select(
-  Sample, p_val, mutation_detected,
-  total_mutant_molecules, total_mutant_molecules_CI_lower, total_mutant_molecules_CI_upper)
-)
+
+Well start by looking at some of the results for the tumor and PBL (white blood cells) sample from each patient:
+
+```{r}
+test_res %>% 
+  dplyr::filter(Sample %in% c("Tumor","PBL")) %>%
+  dplyr::select(FileName, Sample, p_val, mutation_detected) %>%
+  knitr::kable()
 ```
+
+From this we clearly see that the mutation is present in the tumor of both of the patients and not in PBL. We can therefore use it as an indicator of the specific cancer, and thus to check if the patient gets a relapse after the curative surgery. As a positive test we start by looking at the "Plasma_A" sample of both patients, which is a blood sample taken before the surgery:
+
+```{r}
+test_res %>% 
+  dplyr::filter(Sample %in% c("Plasma_A")) %>%
+  dplyr::select(FileName, Sample, p_val, mutation_detected) %>%
+  knitr::kable()
+```
+
+We see that these samples indicate that the mutation, and thus the tumor, is present in both patient, as expected. From the result we can also see the following estimates of properties of the ddPCR analysis and and the ctDNA in the blood:
+
+```{r}
+test_res %>% 
+  dplyr::filter(Sample %in% c("Plasma_A")) %>%
+  dplyr::select(FileName, Sample, 
+                mutant_molecules_per_droplet, 
+                wildtype_molecules_per_droplet,
+                total_mutant_molecules,
+                mutant_molecules_per_droplet_CI_lower, mutant_molecules_per_droplet_CI_upper,
+                wildtype_molecules_per_droplet_CI_lower, wildtype_molecules_per_droplet_CI_upper) %>%
+  knitr::kable(caption = "ddPCR statstics")
+
+test_res %>% 
+  dplyr::filter(Sample %in% c("Plasma_A")) %>%
+  dplyr::select(FileName, Sample, 
+                allele_frequency, 
+                allele_frequency_CI_lower, allele_frequency_CI_upper) %>%
+  knitr::kable(caption = "Blood (ctDNA) statstics")
+```
+
+We can then look what happens after the surgery. To do this we look at the blood samples marked as "Plasma_B":
+
+```{r}
+test_res %>% 
+  dplyr::filter(Sample %in% c("Plasma_B")) %>%
+  dplyr::select(FileName, Sample, p_val, mutation_detected) %>%
+  knitr::kable()
+```
+
+The full list of information available in the analysis results is:
+
+```{r, echo=FALSE}
+colnames(test_res)
+```
+
+We now see that the test indicates that the mutation is no longer present in any of the patients, which is consistent with the tumor being removed by surgery. By testing more blood samples over time it is possible to test if one of the patients gets a relapse. 
 
 ## Note 
 Alternatively the functions \code{train_integrated_ddpcr_model} and \code{test_tumor_sample_simple} are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information. 
