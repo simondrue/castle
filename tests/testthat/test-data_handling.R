@@ -109,21 +109,42 @@ test_that("sample annotations", {
   )
 })
 
-test_that("snapshot", {
+test_that("snapshot - single import", {
   path_to_my_test_samples <- system.file(
     "extdata/test_data/",
     c(
-      "patient_1.csv",
-      "patient_2.csv"
+      "patient_1.csv"
     ),
     package = "castle"
   )
 
-  single_import_patient <- import_QS_files(path_to_my_test_samples[1])
-  multi_import_patient <- import_QS_files(path_to_my_test_samples)
+  single_import_patient <- import_QS_files(path_to_my_test_samples)
   merge_wells_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
+  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "QS")
 
   expect_snapshot(single_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_QS_import_patient %>% data.frame())
+})
+
+test_that("snapshot - multi import", {
+  path_to_my_test_samples <- system.file(
+    "extdata/test_data/",
+    c(
+      "patient_1.csv",
+      "patient_2.csv",
+      "patient_2_extra.csv"
+    ),
+    package = "castle"
+  )
+
+  multi_import_patient <- import_QS_files(path_to_my_test_samples)
+  merge_wells_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
+  merge_wells_and_files_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE, merge_files = TRUE)
+  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "QS")
+
   expect_snapshot(multi_import_patient %>% data.frame())
   expect_snapshot(merge_wells_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_and_files_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_QS_import_patient %>% data.frame())
 })

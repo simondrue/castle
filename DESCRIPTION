@@ -36,7 +36,7 @@ Imports:
     dplyr,
     stats,
     rlang,
-    readr,
+    readr (>= 2.0),
     stringr,
     utils
 Depends: 
