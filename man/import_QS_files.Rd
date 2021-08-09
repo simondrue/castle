@@ -9,7 +9,7 @@ import_QS_files(
   Ch1_is_mutation = TRUE,
   annotations = NULL,
   sample_annotations = NULL,
-  merge_wells = FALSE,
+  merge_wells = "none",
   merge_files = FALSE
 )
 }
@@ -28,9 +28,15 @@ to all samples.}
 but annotations are specific to each sample. This need to include a column
 "Sample", which will be used for joining.}
 
-\item{merge_wells}{Logical. Controls if wells from the same sample
-("Sample") should be merged within a dataset (file). If \code{merge_wells="qs"}
-the merged wells from QuantaSoft (e.g. "M01") is used if these are present. Default if FALSE.}
+\item{merge_wells}{String. Controls if wells from the same sample
+("Sample") should be merged within a dataset (file). There are 4 options:
+\itemize{
+  \item \code{merge_wells="yes"}: Merge wells. Discards QS merged wells (e.g. "M01").
+  \item \code{merge_wells="no"}: Do **not** merge wells. Discard QS merged wells (e.g. "M01").
+  \item \code{merge_wells="qs"}: The merged wells from QuantaSoft (e.g. "M01") is used if these are present.
+  \item \code{merge_wells="none"}: No merging is done.
+}
+Default if "none".}
 
 \item{merge_files}{Logical. If this and \code{merge_wells} is TRUE, samples
 across files are also merged. Default is FALSE.}

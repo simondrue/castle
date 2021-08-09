@@ -10,9 +10,15 @@
 #' @param sample_annotations \code{data.frame}. Similar to \code{annotations},
 #'   but annotations are specific to each sample. This need to include a column
 #'   "Sample", which will be used for joining.
-#' @param merge_wells Logical. Controls if wells from the same sample
-#'   ("Sample") should be merged within a dataset (file). If \code{merge_wells="qs"}
-#'   the merged wells from QuantaSoft (e.g. "M01") is used if these are present. Default if FALSE.
+#' @param merge_wells String. Controls if wells from the same sample
+#'   ("Sample") should be merged within a dataset (file). There are 4 options:
+#'   \itemize{
+#'     \item \code{merge_wells="yes"}: Merge wells. Discards QS merged wells (e.g. "M01").
+#'     \item \code{merge_wells="no"}: Do **not** merge wells. Discard QS merged wells (e.g. "M01").
+#'     \item \code{merge_wells="qs"}: The merged wells from QuantaSoft (e.g. "M01") is used if these are present.
+#'     \item \code{merge_wells="none"}: No merging is done.
+#'   }
+#'   Default if "none".
 #' @param merge_files Logical. If this and \code{merge_wells} is TRUE, samples
 #'   across files are also merged. Default is FALSE.
 #'
@@ -43,7 +49,7 @@ import_QS_files <- function(paths,
                             Ch1_is_mutation = TRUE,
                             annotations = NULL,
                             sample_annotations = NULL,
-                            merge_wells = FALSE,
+                            merge_wells = "none",
                             merge_files = FALSE) {
 
   # Check existence of files/folders
@@ -76,10 +82,10 @@ import_QS_files <- function(paths,
   # Get .csv files from directories
   load_dirs_df <- suppressWarnings(readr::read_csv(dir_file_paths, id = "FilePath", show_col_types = FALSE))
 
-  # Bind data
-
+  # Bind data from dirs and files
   df <- dplyr::bind_rows(load_files_df, load_dirs_df)
 
+  # Channel 1 data
   ch1_df <- df %>%
     dplyr::filter(
       grepl("Ch1", .data$TargetType)
@@ -89,6 +95,7 @@ import_QS_files <- function(paths,
     ) %>%
     dplyr::select(-c("TargetType"))
 
+  # Channel 2 data
   ch2_df <- df %>%
     dplyr::filter(
       grepl("Ch2", .data$TargetType)
@@ -98,8 +105,10 @@ import_QS_files <- function(paths,
     ) %>%
     dplyr::select("FilePath", "Well", "ExptType", "Experiment", "Sample", "Ch2TargetType")
 
+  # Join Ch1 and Ch2 data
   df <- dplyr::full_join(ch1_df, ch2_df, by = c("FilePath", "Well", "ExptType", "Experiment", "Sample"))
 
+  # Clean up data
   df <- df %>%
     dplyr::mutate(
       FileName = basename(.data$FilePath)
@@ -121,21 +130,26 @@ import_QS_files <- function(paths,
       NumberOfMergedWells = stringr::str_count(ifelse(is.na(.data$MergedWells), "", .data$MergedWells), pattern = ",") + 1
     )
 
-  if (merge_wells == TRUE) {
-    # Single wells (not QS merged)
-    single_df <- df %>%
+  # Merging wells
+  if (merge_wells == "none") {
+    # Do nothing
+    df <- df
+  } else if (merge_wells == "yes") {
+    # Remove QS merged wells
+    no_qs_df <- df %>%
       dplyr::filter(
         !grepl("M", .data$Well)
-      ) %>%
+      )
+
+    # Single wells
+    single_df <- no_qs_df %>%
       dplyr::group_by(dplyr::across(dplyr::all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
       dplyr::filter(dplyr::n() == 1) %>%
       dplyr::ungroup()
 
-    # Wells to be merged (not QS merged)
-    merged_df <- df %>%
-      dplyr::filter(
-        !grepl("M", .data$Well)
-      ) %>%
+    # Wells to be merged
+    merged_df <-
+      no_qs_df %>%
       dplyr::group_by(dplyr::across(dplyr::all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
       dplyr::filter(dplyr::n() > 1) %>%
       dplyr::summarise(
@@ -160,22 +174,31 @@ import_QS_files <- function(paths,
     df <- dplyr::bind_rows(
       merged_df, single_df
     )
-  } else if (merge_wells == "QS") {
+  } else if (merge_wells == "no") {
+    # Remove QS merged samples
+    df <- df %>%
+      dplyr::filter(
+        !grepl("M", .data$Well)
+      )
+  } else if (merge_wells == "qs") {
+    # Vector of QS merged samples
     qs_merged_samples <- df %>%
       dplyr::filter(grepl("M", .data$Well)) %>%
       dplyr::pull(.data$Sample) %>%
+      unique()
+    # Vector of QS un-merged samples
+    qs_unmerged_samples <- df %>%
+      dplyr::pull(.data$Sample) %>%
+      setdiff(qs_merged_samples) %>%
       unique()
 
     # Filter:
     # If sample is merged: Keep merged sample
     # If sample is NOT merged: Keep original sample(s)
     df <- df %>%
-      dplyr::filter(grepl("M", .data$Well) | !.data$Sample %in% qs_merged_samples)
-  } else if (merge_wells == FALSE) {
-    # TODO
-    df <- df
+      dplyr::filter(grepl("M", .data$Well) | .data$Sample %in% qs_unmerged_samples)
   } else {
-    stop("merge_wells shpuld be TRUE, FALSE or 'QS'")
+    stop("merge_wells should be 'yes', 'no', 'qs' or 'none'")
   }
 
   if (!is.null(annotations)) {

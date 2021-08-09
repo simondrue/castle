@@ -84,7 +84,7 @@ The object `trained_model` is simply a list of parameters used in the statistica
 
 ### Testing some samples with CASTLE 
 
-For testing we will use a variety of samples from two different patients, who have undergone curative surgery for colorectal cancer. We start by loading the data from these patients. To load the data we will again use the function `import_QS_files`. But this time, data from some of the samples is distributed across multiple wells. These can be merged together using the flag `merge_wells = TRUE`. Furthermore samples across multiple files can also be merged using the flag `merge_files = TRUE` if necessary.
+For testing we will use a variety of samples from two different patients, who have undergone curative surgery for colorectal cancer. We start by loading the data from these patients. To load the data we will again use the function `import_QS_files`. But this time, data from some of the samples is distributed across multiple wells. These can be merged together using the flag `merge_wells = 'yes'` (see `?import_QS_files` for other methods for merging). Furthermore samples across multiple files can also be merged using the flag `merge_files = TRUE` if necessary.
 
 ```{r, load test samples}
 # Path to example data in the package
@@ -101,7 +101,7 @@ path_to_my_test_samples <- system.file(
 test_samples <-
   import_QS_files(
     path_to_my_test_samples,
-    merge_wells = TRUE
+    merge_wells = "yes"
   )
 ```
 

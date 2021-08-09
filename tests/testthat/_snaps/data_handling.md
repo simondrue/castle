@@ -1,4 +1,4 @@
-# snapshot - single import
+# single import
 
     Code
       single_import_patient %>% data.frame()
@@ -22,7 +22,7 @@
 ---
 
     Code
-      merge_wells_import_patient %>% data.frame()
+      merge_wells_yes_import_patient %>% data.frame()
     Output
              FileName           Sample Well Ch1TargetType Ch2TargetType        Target
       1 patient_1.csv Patient1 PlasmaA  M01       Unknown       Unknown KRAS G12D mut
@@ -33,6 +33,24 @@
         DoublePositiveDroplets TotalDroplets NumberOfMergedWells MergedWells
       1                      0         28794                   2   (A01,B01)
       2                      0         14875                   1        <NA>
+
+---
+
+    Code
+      merge_wells_no_import_patient %>% data.frame()
+    Output
+             FileName           Sample Well Ch1TargetType Ch2TargetType        Target
+      1 patient_1.csv Patient1 PlasmaA  A01       Unknown       Unknown KRAS G12D mut
+      2 patient_1.csv Patient1 PlasmaA  B01       Unknown       Unknown KRAS G12D mut
+      3 patient_1.csv          Control  C01       Unknown       Unknown KRAS G12D mut
+        DoubleNegativeDroplets WildtypeOnlyDroplets MutantOnlyDroplets
+      1                  11147                 2771                  1
+      2                  11871                 3002                  2
+      3                  11871                 3002                  2
+        DoublePositiveDroplets TotalDroplets NumberOfMergedWells MergedWells
+      1                      0         13919                   1        <NA>
+      2                      0         14875                   1        <NA>
+      3                      0         14875                   1        <NA>
 
 ---
 
@@ -49,7 +67,7 @@
       1                      2         88118                   2   (A01,B01)
       2                      0         14875                   1        <NA>
 
-# snapshot - multi import
+# multi import
 
     Code
       multi_import_patient %>% data.frame()
@@ -91,7 +109,7 @@
 ---
 
     Code
-      merge_wells_import_patient %>% data.frame()
+      merge_wells_yes_import_patient %>% data.frame()
     Output
                    FileName           Sample Well Ch1TargetType Ch2TargetType
       1       patient_1.csv Patient1 PlasmaA  M01       Unknown       Unknown
@@ -108,6 +126,36 @@
       2                      0         28794                   2   (A01,B01)
       3                      0         28794                   2   (A01,B01)
       4                      0         14875                   1        <NA>
+
+---
+
+    Code
+      merge_wells_no_import_patient %>% data.frame()
+    Output
+                   FileName           Sample Well Ch1TargetType Ch2TargetType
+      1       patient_1.csv Patient1 PlasmaA  A01       Unknown       Unknown
+      2       patient_1.csv Patient1 PlasmaA  B01       Unknown       Unknown
+      3       patient_1.csv          Control  C01       Unknown       Unknown
+      4       patient_2.csv Patient2 PlasmaA  A01       Unknown       Unknown
+      5       patient_2.csv Patient2 PlasmaA  B01       Unknown       Unknown
+      6 patient_2_extra.csv Patient2 PlasmaA  A01       Unknown       Unknown
+      7 patient_2_extra.csv Patient2 PlasmaA  B01       Unknown       Unknown
+               Target DoubleNegativeDroplets WildtypeOnlyDroplets MutantOnlyDroplets
+      1 KRAS G12D mut                  11147                 2771                  1
+      2 KRAS G12D mut                  11871                 3002                  2
+      3 KRAS G12D mut                  11871                 3002                  2
+      4 KRAS G12D mut                  11147                 2771                  1
+      5 KRAS G12D mut                  11871                 3002                  2
+      6 KRAS G12D mut                  11147                 2771                  1
+      7 KRAS G12D mut                  11871                 3002                  2
+        DoublePositiveDroplets TotalDroplets NumberOfMergedWells MergedWells
+      1                      0         13919                   1        <NA>
+      2                      0         14875                   1        <NA>
+      3                      0         14875                   1        <NA>
+      4                      0         13919                   1        <NA>
+      5                      0         14875                   1        <NA>
+      6                      0         13919                   1        <NA>
+      7                      0         14875                   1        <NA>
 
 ---
 

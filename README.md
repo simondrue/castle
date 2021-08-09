@@ -116,8 +116,9 @@ patients, who have undergone curative surgery for colorectal cancer. We
 start by loading the data from these patients. To load the data we will
 again use the function `import_QS_files`. But this time, data from some
 of the samples is distributed across multiple wells. These can be merged
-together using the flag `merge_wells = TRUE`. Furthermore samples across
-multiple files can also be merged using the flag `merge_files = TRUE` if
+together using the flag `merge_wells = 'yes'` (see `?import_QS_files`
+for other methods for merging). Furthermore samples across multiple
+files can also be merged using the flag `merge_files = TRUE` if
 necessary.
 
 ``` r
@@ -135,7 +136,7 @@ path_to_my_test_samples <- system.file(
 test_samples <-
   import_QS_files(
     path_to_my_test_samples,
-    merge_wells = TRUE
+    merge_wells = "yes"
   )
 ```
 
@@ -334,5 +335,5 @@ sim_test_res <- test_tumor_sample_simple(
 
 | Sample   | p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
 |:---------|-------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
-| Positive |      0 | TRUE               |                 147.2964 |                            118.0839 |                          180.953374 |
-| Negative |      1 | FALSE              |                   0.0000 |                              0.0000 |                            3.317448 |
+| Positive |      0 | TRUE               |                 139.2332 |                             110.894 |                          172.015538 |
+| Negative |      1 | FALSE              |                   0.0000 |                               0.000 |                            5.091246 |

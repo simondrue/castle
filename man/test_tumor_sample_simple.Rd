@@ -39,6 +39,25 @@ intervals. Default is 0.01.}
 \value{
 A \code{data.frame} with results from the CASTLE algorithm (parameter
   estimates, CIs, p-values etc.) joined to the right of \code{test_samples}.
+  Following is the full list of information added:
+  \itemize{
+    \item mutant_molecules_per_droplet
+    \item wildtype_molecules_per_droplet
+    \item p_val
+    \item test_statistic
+    \item mutation_detected
+    \item allele_frequency
+    \item total_mutant_molecules
+    \item total_wildtype_molecules
+    \item mutant_molecules_per_droplet_CI_lower
+    \item mutant_molecules_per_droplet_CI_upper
+    \item allele_frequency_CI_lower
+    \item allele_frequency_CI_upper
+    \item total_mutant_molecules_CI_lower
+    \item total_mutant_molecules_CI_upper
+    \item wildtype_molecules_per_droplet_CI_lower
+    \item wildtype_molecules_per_droplet_CI_upper
+  }
 }
 \description{
 Tests samples for the presence of mutant DNA using the

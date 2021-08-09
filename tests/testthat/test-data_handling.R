@@ -10,8 +10,9 @@ test_that("columns", {
 
   single_import_patient <- import_QS_files(path_to_my_test_sample[1])
   multi_import_patient <- import_QS_files(path_to_my_test_sample)
-  merge_wells_import_patient <- import_QS_files(path_to_my_test_sample, merge_wells = TRUE)
-  merge_files_import_patient <- import_QS_files(path_to_my_test_sample, merge_wells = TRUE, merge_files = TRUE)
+  merge_wells_yes_import_patient <- import_QS_files(path_to_my_test_sample, merge_wells = "yes")
+  merge_wells_no_import_patient <- import_QS_files(path_to_my_test_sample, merge_wells = "no")
+  merge_files_import_patient <- import_QS_files(path_to_my_test_sample, merge_wells = "yes", merge_files = TRUE)
 
   expected_columns <- c(
     "FileName",
@@ -23,17 +24,24 @@ test_that("columns", {
 
   single_observed_columns <- colnames(single_import_patient)
   multi_observed_columns <- colnames(multi_import_patient)
-  merge_wells_observed_columns <- colnames(merge_wells_import_patient)
+  merge_wells_yes_observed_columns <- colnames(merge_wells_yes_import_patient)
+  merge_wells_no_observed_columns <- colnames(merge_wells_no_import_patient)
   merge_files_observed_columns <- colnames(merge_files_import_patient)
 
 
   expect_true(setequal(expected_columns, single_observed_columns))
   expect_true(setequal(expected_columns, multi_observed_columns))
-  expect_true(setequal(expected_columns, merge_wells_observed_columns))
+  expect_true(setequal(expected_columns, merge_wells_yes_observed_columns))
+  expect_true(setequal(expected_columns, merge_wells_no_observed_columns))
   expect_true(setequal(expected_columns, merge_files_observed_columns))
 })
 
 test_that("Wrong function calls", {
+  path_to_my_test_samples <- system.file(
+    "extdata/test_data/", c("patient_1.csv"),
+    package = "castle"
+  )
+
   expect_error(
     import_QS_files("do/not/exist/1"),
     regexp = "do/not/exist/1.*do not exist"
@@ -46,6 +54,11 @@ test_that("Wrong function calls", {
   expect_error(
     import_QS_files(c("")),
     regexp = "''.*do not exist"
+  )
+
+  expect_error(
+    import_QS_files(path_to_my_test_samples, merge_wells = "unusable_string"),
+    regexp = "merge_wells should be 'yes', 'no', 'qs' or 'none'"
   )
 })
 
@@ -109,7 +122,7 @@ test_that("sample annotations", {
   )
 })
 
-test_that("snapshot - single import", {
+test_that("single import", {
   path_to_my_test_samples <- system.file(
     "extdata/test_data/",
     c(
@@ -119,15 +132,17 @@ test_that("snapshot - single import", {
   )
 
   single_import_patient <- import_QS_files(path_to_my_test_samples)
-  merge_wells_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
-  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "QS")
+  merge_wells_yes_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "yes")
+  merge_wells_no_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "no")
+  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "qs")
 
   expect_snapshot(single_import_patient %>% data.frame())
-  expect_snapshot(merge_wells_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_yes_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_no_import_patient %>% data.frame())
   expect_snapshot(merge_wells_QS_import_patient %>% data.frame())
 })
 
-test_that("snapshot - multi import", {
+test_that("multi import", {
   path_to_my_test_samples <- system.file(
     "extdata/test_data/",
     c(
@@ -139,12 +154,31 @@ test_that("snapshot - multi import", {
   )
 
   multi_import_patient <- import_QS_files(path_to_my_test_samples)
-  merge_wells_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE)
-  merge_wells_and_files_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = TRUE, merge_files = TRUE)
-  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "QS")
+  merge_wells_yes_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "yes")
+  merge_wells_no_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "no")
+  merge_wells_and_files_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "yes", merge_files = TRUE)
+  merge_wells_QS_import_patient <- import_QS_files(path_to_my_test_samples, merge_wells = "qs")
+
+  expect_equal(
+    nrow(multi_import_patient), 10
+  )
+  expect_equal(
+    nrow(merge_wells_yes_import_patient), 4
+  )
+  expect_equal(
+    nrow(merge_wells_no_import_patient), 7
+  )
+  expect_equal(
+    nrow(merge_wells_and_files_import_patient), 3
+  )
+  expect_equal(
+    nrow(merge_wells_QS_import_patient), 4
+  )
+
 
   expect_snapshot(multi_import_patient %>% data.frame())
-  expect_snapshot(merge_wells_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_yes_import_patient %>% data.frame())
+  expect_snapshot(merge_wells_no_import_patient %>% data.frame())
   expect_snapshot(merge_wells_and_files_import_patient %>% data.frame())
   expect_snapshot(merge_wells_QS_import_patient %>% data.frame())
 })
