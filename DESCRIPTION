@@ -34,8 +34,8 @@ BugReports: https://github.com/simondrue/castle/issues
 Imports: 
     magrittr,
     dplyr,
-    stats,
     rlang,
+    stats,
     stringr,
     utils
 Depends: 
