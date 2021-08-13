@@ -4,16 +4,15 @@
 #'   version the CASTLE algorithm based on a set of training samples, assumed to
 #'   have no mutant DNA present.
 #'
-#' @param training_samples \code{data.frame} with cancer negative training
-#'   samples as rows. At least the following columns should be present:
-#'     \itemize{
-#'       \item{\code{WildtypeOnlyDroplets}}
-#'       \item{\code{MutantOnlyDroplets}}
-#'       \item{\code{DoubleNegativeDroplets}}
-#'       \item{\code{DoublePositiveDroplets}}
-#'    }
-#' If data from QuataSoft is available, these can be imported using
-#' \code{\link{import_QS_files}}.
+#' @param background_samples \code{data.frame} with cancer negative training
+#'   samples as rows. These are the samples used to train/estimate the
+#'   parameters of the model. At least the following columns should be present:
+#'   \itemize{
+#'     \item{\code{WildtypeOnlyDroplets}}
+#'     \item{\code{MutantOnlyDroplets}}
+#'     \item{\code{DoubleNegativeDroplets}}
+#'     \item{\code{DoublePositiveDroplets}} } If data from QuantaSoft is available,
+#'   these can be imported using \code{\link{import_QS_files}}.
 #'
 #' @return List of parameter estimates for the simple CASLTE model. This should
 #'   be used as input for \code{\link{test_tumor_sample_simple}}.
@@ -21,15 +20,15 @@
 #'   \code{\link{test_tumor_sample_simple}}
 #' @export
 
-train_simple_ddpcr_model <- function(training_samples) {
+train_simple_ddpcr_model <- function(background_samples) {
   # Check input
-  check_input_samples(training_samples)
+  check_input_samples(background_samples)
 
   # Unpack data
-  N_WT_only_vec <- training_samples$WildtypeOnlyDroplets
-  N_M_only_vec <- training_samples$MutantOnlyDroplets
-  N_d_neg_vec <- training_samples$DoubleNegativeDroplets
-  N_d_pos_vec <- training_samples$DoublePositiveDroplets
+  N_WT_only_vec <- background_samples$WildtypeOnlyDroplets
+  N_M_only_vec <- background_samples$MutantOnlyDroplets
+  N_d_neg_vec <- background_samples$DoubleNegativeDroplets
+  N_d_pos_vec <- background_samples$DoublePositiveDroplets
 
   # Estimate lambdas
   l_est_vec <- log((N_WT_only_vec + N_d_pos_vec) / (N_d_neg_vec + N_M_only_vec) + 1)

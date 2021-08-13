@@ -11,16 +11,15 @@
 #'   points. Higher values give better approximation but longer computation
 #'   times.
 #'
-#' @param training_samples \code{data.frame} with cancer negative training
-#'   samples as rows. At least the following columns should be present:
-#'     \itemize{
-#'       \item{\code{WildtypeOnlyDroplets}}
-#'       \item{\code{MutantOnlyDroplets}}
-#'       \item{\code{DoubleNegativeDroplets}}
-#'       \item{\code{DoublePositiveDroplets}}
-#'    }
-#' If data from QuataSoft is available, these can be imported using
-#' \code{\link{import_QS_files}}.
+#' @param background_samples \code{data.frame} with cancer negative training
+#'   samples as rows. These are the samples used to train/estimate the
+#'   parameters of the model. At least the following columns should be present:
+#'   \itemize{
+#'     \item{\code{WildtypeOnlyDroplets}}
+#'     \item{\code{MutantOnlyDroplets}}
+#'     \item{\code{DoubleNegativeDroplets}}
+#'     \item{\code{DoublePositiveDroplets}} } If data from QuataSoft is available,
+#'   these can be imported using \code{\link{import_QS_files}}.
 #' @param abc_grid_resolution The resolution of the 3D-grid on which the
 #'   integrated LR-test statistic is approximated. Default is 25 (equal to a
 #'   grid of 25^3 = 15,625 points).
@@ -31,20 +30,20 @@
 #' @seealso \code{\link{import_QS_files}, \link{test_tumor_sample_integrated}}
 #'
 #' @export
-train_integrated_ddpcr_model <- function(training_samples,
+train_integrated_ddpcr_model <- function(background_samples,
                                          abc_grid_resolution = 25) {
   # Check input
-  check_input_samples(training_samples)
+  check_input_samples(background_samples)
 
   # Unpack data
-  N_WT_only_vec <- training_samples$WildtypeOnlyDroplets
-  N_M_only_vec <- training_samples$MutantOnlyDroplets
-  N_d_neg_vec <- training_samples$DoubleNegativeDroplets
-  N_d_pos_vec <- training_samples$DoublePositiveDroplets
+  N_WT_only_vec <- background_samples$WildtypeOnlyDroplets
+  N_M_only_vec <- background_samples$MutantOnlyDroplets
+  N_d_neg_vec <- background_samples$DoubleNegativeDroplets
+  N_d_pos_vec <- background_samples$DoublePositiveDroplets
 
   # Train parameters (get MLE on training data)
   simple_model <- train_simple_ddpcr_model(
-    training_samples = training_samples
+    background_samples = background_samples
   )
 
   # Get parameters from model
