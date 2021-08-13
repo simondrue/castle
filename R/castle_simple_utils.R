@@ -125,6 +125,7 @@ estimate_r <- function(N_WT_only, N_M_only, N_d_neg, N_d_pos,
   return(r_est)
 }
 
+#' @importFrom stats qchisq uniroot
 find_abd_confidence_intervals <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_vec, N_d_pos_vec,
                                           l_est_vec, a_est, b_est, c_est, alpha) {
   # Helper functions
@@ -146,8 +147,8 @@ find_abd_confidence_intervals <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_v
   }
 
   # Find upper and lower bound of a
-  if (ll_ratio_simple(TOL_0, par = "a") > stats::qchisq(1 - alpha, 1)) {
-    uni_res <- stats::uniroot(function(x) ll_ratio_simple(x, par = "a") - stats::qchisq(1 - alpha, 1),
+  if (ll_ratio_simple(TOL_0, par = "a") > qchisq(1 - alpha, 1)) {
+    uni_res <- uniroot(function(x) ll_ratio_simple(x, par = "a") - qchisq(1 - alpha, 1),
       interval = c(TOL_0, a_est),
       tol = TOL_0
     )
@@ -156,14 +157,14 @@ find_abd_confidence_intervals <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_v
     a_CI_lower <- TOL_0
   }
 
-  a_CI_upper <- stats::uniroot(function(x) ll_ratio_simple(x, par = "a") - stats::qchisq(1 - alpha, 1),
+  a_CI_upper <- uniroot(function(x) ll_ratio_simple(x, par = "a") - qchisq(1 - alpha, 1),
     interval = c(a_est, 5),
     tol = TOL_0
   )$root
 
   # Find upper and lower bound of b
-  if (ll_ratio_simple(TOL_0, par = "b") > stats::qchisq(1 - alpha, 1)) {
-    uni_res <- stats::uniroot(function(x) ll_ratio_simple(x, par = "b") - stats::qchisq(1 - alpha, 1),
+  if (ll_ratio_simple(TOL_0, par = "b") > qchisq(1 - alpha, 1)) {
+    uni_res <- uniroot(function(x) ll_ratio_simple(x, par = "b") - qchisq(1 - alpha, 1),
       interval = c(TOL_0, b_est),
       tol = TOL_0
     )
@@ -172,14 +173,14 @@ find_abd_confidence_intervals <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_v
     b_CI_lower <- TOL_0
   }
 
-  b_CI_upper <- stats::uniroot(function(x) ll_ratio_simple(x, par = "b") - stats::qchisq(1 - alpha, 1),
+  b_CI_upper <- uniroot(function(x) ll_ratio_simple(x, par = "b") - qchisq(1 - alpha, 1),
     interval = c(b_est, 5),
     tol = TOL_0
   )$root
 
   # Find upper and lower bound of c
-  if (ll_ratio_simple(TOL_0, par = "c") > stats::qchisq(1 - alpha, 1)) {
-    uni_res <- stats::uniroot(function(x) ll_ratio_simple(x, par = "c") - stats::qchisq(1 - alpha, 1),
+  if (ll_ratio_simple(TOL_0, par = "c") > qchisq(1 - alpha, 1)) {
+    uni_res <- uniroot(function(x) ll_ratio_simple(x, par = "c") - qchisq(1 - alpha, 1),
       interval = c(TOL_0, c_est),
       tol = TOL_0
     )
@@ -188,7 +189,7 @@ find_abd_confidence_intervals <- function(N_WT_only_vec, N_M_only_vec, N_d_neg_v
     c_CI_lower <- TOL_0
   }
 
-  c_CI_upper <- stats::uniroot(function(x) ll_ratio_simple(x, par = "c") - stats::qchisq(1 - alpha, 1),
+  c_CI_upper <- uniroot(function(x) ll_ratio_simple(x, par = "c") - qchisq(1 - alpha, 1),
     interval = c(c_est, 5),
     tol = TOL_0
   )$root
@@ -227,8 +228,8 @@ get_r_CI_simple <- function(l_est, r_est,
   }
 
   # Find upper and lower bound of r
-  if (ll_ratio_simple(par_0 = 0, par = "r") > stats::qchisq(1 - alpha, 1)) {
-    uni_res <- stats::uniroot(function(x) ll_ratio_simple(x, par = "r") - stats::qchisq(1 - alpha, 1),
+  if (ll_ratio_simple(par_0 = 0, par = "r") > qchisq(1 - alpha, 1)) {
+    uni_res <- uniroot(function(x) ll_ratio_simple(x, par = "r") - qchisq(1 - alpha, 1),
       interval = c(0, r_est),
       tol = TOL_0
     )
@@ -237,7 +238,7 @@ get_r_CI_simple <- function(l_est, r_est,
     lower <- 0
   }
 
-  uni_res <- stats::uniroot(function(x) ll_ratio_simple(x, par = "r") - stats::qchisq(1 - alpha, 1),
+  uni_res <- uniroot(function(x) ll_ratio_simple(x, par = "r") - qchisq(1 - alpha, 1),
     interval = c(r_est, 1),
     tol = TOL_0,
     extendInt = "upX"

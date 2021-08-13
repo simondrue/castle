@@ -159,6 +159,8 @@ train_integrated_ddpcr_model <- function(background_samples,
 #'
 #' @seealso \code{\link{train_integrated_ddpcr_model}}
 #' @export
+#'
+#' @import dplyr
 test_tumor_sample_integrated <- function(test_samples,
                                          integrated_model,
                                          alpha = 0.01,
@@ -231,7 +233,7 @@ test_tumor_sample_integrated <- function(test_samples,
     }
 
     # Collect results
-    res_df <- dplyr::bind_rows(res_df, dplyr::bind_cols(test_sample, res))
+    res_df <- bind_rows(res_df, bind_cols(test_sample, res))
   }
 
   return(res_df)

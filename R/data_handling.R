@@ -45,6 +45,10 @@
 #' }
 #'
 #' @export
+#'
+#' @importFrom readr read_csv
+#' @importFrom utils file_test
+#' @import dplyr stringr
 import_QS_files <- function(paths,
                             Ch1_is_mutation = TRUE,
                             annotations = NULL,
@@ -66,68 +70,68 @@ import_QS_files <- function(paths,
   # Split input into files and directories
   # Get unique files
   file_paths <-
-    paths[utils::file_test("-f", paths)] %>%
+    paths[file_test("-f", paths)] %>%
     unique()
 
   # Get unique files in folder - and setdiff files in file_paths above
   dir_file_paths <-
-    paths[utils::file_test("-d", paths)] %>%
+    paths[file_test("-d", paths)] %>%
     list.files(pattern = ".csv", full.names = TRUE) %>%
     unique() %>%
     setdiff(file_paths)
 
   # Get files
-  load_files_df <- suppressWarnings(readr::read_csv(file_paths, id = "FilePath", show_col_types = FALSE))
+  load_files_df <- suppressWarnings(read_csv(file_paths, id = "FilePath", show_col_types = FALSE))
 
   # Get .csv files from directories
-  load_dirs_df <- suppressWarnings(readr::read_csv(dir_file_paths, id = "FilePath", show_col_types = FALSE))
+  load_dirs_df <- suppressWarnings(read_csv(dir_file_paths, id = "FilePath", show_col_types = FALSE))
 
   # Bind data from dirs and files
-  df <- dplyr::bind_rows(load_files_df, load_dirs_df)
+  df <- bind_rows(load_files_df, load_dirs_df)
 
   # Channel 1 data
   ch1_df <- df %>%
-    dplyr::filter(
+    filter(
       grepl("Ch1", .data$TargetType)
     ) %>%
-    dplyr::mutate(
-      Ch1TargetType = stringr::str_remove(.data$TargetType, pattern = "Ch1")
+    mutate(
+      Ch1TargetType = str_remove(.data$TargetType, pattern = "Ch1")
     ) %>%
-    dplyr::select(-c("TargetType"))
+    select(-c("TargetType"))
 
   # Channel 2 data
   ch2_df <- df %>%
-    dplyr::filter(
+    filter(
       grepl("Ch2", .data$TargetType)
     ) %>%
-    dplyr::mutate(
-      Ch2TargetType = stringr::str_remove(.data$TargetType, pattern = "Ch2")
+    mutate(
+      Ch2TargetType = str_remove(.data$TargetType, pattern = "Ch2")
     ) %>%
-    dplyr::select("FilePath", "Well", "ExptType", "Experiment", "Sample", "Ch2TargetType")
+    select("FilePath", "Well", "ExptType", "Experiment", "Sample", "Ch2TargetType")
 
   # Join Ch1 and Ch2 data
-  df <- dplyr::full_join(ch1_df, ch2_df, by = c("FilePath", "Well", "ExptType", "Experiment", "Sample"))
+  df <- full_join(ch1_df, ch2_df, by = c("FilePath", "Well", "ExptType", "Experiment", "Sample"))
 
   # Clean up data
   df <- df %>%
-    dplyr::mutate(
+    mutate(
       FileName = basename(.data$FilePath)
     ) %>%
-    dplyr::select(
+    select(
       "FileName",
       "Well", "Sample", "Ch1TargetType", "Ch2TargetType", "Target",
       "Ch1+Ch2-", "Ch1-Ch2+", "Ch1-Ch2-", "Ch1+Ch2+",
       "AcceptedDroplets", "MergedWells"
     ) %>%
-    dplyr::rename(
+    rename(
       MutantOnlyDroplets = ifelse(Ch1_is_mutation, "Ch1+Ch2-", "Ch1-Ch2+"),
       WildtypeOnlyDroplets = ifelse(Ch1_is_mutation, "Ch1-Ch2+", "Ch1+Ch2-"),
       DoubleNegativeDroplets = "Ch1-Ch2-",
       DoublePositiveDroplets = "Ch1+Ch2+",
       TotalDroplets = .data$AcceptedDroplets
     ) %>%
-    dplyr::mutate(
-      NumberOfMergedWells = stringr::str_count(ifelse(is.na(.data$MergedWells), "", .data$MergedWells), pattern = ",") + 1
+    mutate(
+      NumberOfMergedWells = str_count(ifelse(is.na(.data$MergedWells), "", .data$MergedWells), pattern = ",") + 1
     )
 
   # Merging wells
@@ -137,22 +141,22 @@ import_QS_files <- function(paths,
   } else if (merge_wells == "yes") {
     # Remove QS merged wells
     no_qs_df <- df %>%
-      dplyr::filter(
+      filter(
         !grepl("M", .data$Well)
       )
 
     # Single wells
     single_df <- no_qs_df %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
-      dplyr::filter(dplyr::n() == 1) %>%
-      dplyr::ungroup()
+      group_by(across(all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
+      filter(n() == 1) %>%
+      ungroup()
 
     # Wells to be merged
     merged_df <-
       no_qs_df %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
-      dplyr::filter(dplyr::n() > 1) %>%
-      dplyr::summarise(
+      group_by(across(all_of(if (merge_files) "Sample" else c("Sample", "FileName")))) %>%
+      filter(n() > 1) %>%
+      summarise(
         FileName = paste0(unique(.data$FileName), collapse = ","),
         Target = paste0(unique(.data$Target), collapse = ","),
         Ch1TargetType = paste0(unique(.data$Ch1TargetType), collapse = ","),
@@ -162,33 +166,33 @@ import_QS_files <- function(paths,
         DoubleNegativeDroplets = sum(.data$DoubleNegativeDroplets),
         DoublePositiveDroplets = sum(.data$DoublePositiveDroplets),
         TotalDroplets = sum(.data$TotalDroplets),
-        NumberOfMergedWells = dplyr::n(),
+        NumberOfMergedWells = n(),
         MergedWells = paste0(c("(", paste0(c(.data$Well), collapse = ","), ")"), collapse = ""),
         .groups = "drop"
       ) %>%
-      dplyr::mutate(
-        Well = sprintf("M%02d", dplyr::row_number())
+      mutate(
+        Well = sprintf("M%02d", row_number())
       )
 
     # Bind data
-    df <- dplyr::bind_rows(
+    df <- bind_rows(
       merged_df, single_df
     )
   } else if (merge_wells == "no") {
     # Remove QS merged samples
     df <- df %>%
-      dplyr::filter(
+      filter(
         !grepl("M", .data$Well)
       )
   } else if (merge_wells == "qs") {
     # Vector of QS merged samples
     qs_merged_samples <- df %>%
-      dplyr::filter(grepl("M", .data$Well)) %>%
-      dplyr::pull(.data$Sample) %>%
+      filter(grepl("M", .data$Well)) %>%
+      pull(.data$Sample) %>%
       unique()
     # Vector of QS un-merged samples
     qs_unmerged_samples <- df %>%
-      dplyr::pull(.data$Sample) %>%
+      pull(.data$Sample) %>%
       setdiff(qs_merged_samples) %>%
       unique()
 
@@ -196,22 +200,22 @@ import_QS_files <- function(paths,
     # If sample is merged: Keep merged sample
     # If sample is NOT merged: Keep original sample(s)
     df <- df %>%
-      dplyr::filter(grepl("M", .data$Well) | .data$Sample %in% qs_unmerged_samples)
+      filter(grepl("M", .data$Well) | .data$Sample %in% qs_unmerged_samples)
   } else {
     stop("merge_wells should be 'yes', 'no', 'qs' or 'none'")
   }
 
   if (!is.null(annotations)) {
-    df <- df %>% dplyr::bind_cols(annotations)
+    df <- df %>% bind_cols(annotations)
   }
 
   if (!is.null(sample_annotations)) {
-    df <- df %>% dplyr::left_join(sample_annotations, by = "Sample")
+    df <- df %>% left_join(sample_annotations, by = "Sample")
   }
 
   # Arrange columns
   df <- df %>%
-    dplyr::relocate(
+    relocate(
       "FileName", "Sample",
       "Well", "Ch1TargetType", "Ch2TargetType", "Target",
       "DoubleNegativeDroplets", "WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoublePositiveDroplets",
