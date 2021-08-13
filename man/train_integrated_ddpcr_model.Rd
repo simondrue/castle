@@ -8,15 +8,14 @@ train_integrated_ddpcr_model(background_samples, abc_grid_resolution = 25)
 }
 \arguments{
 \item{background_samples}{\code{data.frame} with cancer negative training
-  samples as rows. At least the following columns should be present:
-    \itemize{
-      \item{\code{WildtypeOnlyDroplets}}
-      \item{\code{MutantOnlyDroplets}}
-      \item{\code{DoubleNegativeDroplets}}
-      \item{\code{DoublePositiveDroplets}}
-   }
-If data from QuataSoft is available, these can be imported using
-\code{\link{import_QS_files}}.}
+samples as rows. These are the samples used to train/estimate the
+parameters of the model. At least the following columns should be present:
+\itemize{
+  \item{\code{WildtypeOnlyDroplets}}
+  \item{\code{MutantOnlyDroplets}}
+  \item{\code{DoubleNegativeDroplets}}
+  \item{\code{DoublePositiveDroplets}} } If data from QuataSoft is available,
+these can be imported using \code{\link{import_QS_files}}.}
 
 \item{abc_grid_resolution}{The resolution of the 3D-grid on which the
 integrated LR-test statistic is approximated. Default is 25 (equal to a

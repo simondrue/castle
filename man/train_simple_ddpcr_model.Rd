@@ -8,15 +8,14 @@ train_simple_ddpcr_model(background_samples)
 }
 \arguments{
 \item{background_samples}{\code{data.frame} with cancer negative training
-  samples as rows. At least the following columns should be present:
-    \itemize{
-      \item{\code{WildtypeOnlyDroplets}}
-      \item{\code{MutantOnlyDroplets}}
-      \item{\code{DoubleNegativeDroplets}}
-      \item{\code{DoublePositiveDroplets}}
-   }
-If data from QuataSoft is available, these can be imported using
-\code{\link{import_QS_files}}.}
+samples as rows. These are the samples used to train/estimate the
+parameters of the model. At least the following columns should be present:
+\itemize{
+  \item{\code{WildtypeOnlyDroplets}}
+  \item{\code{MutantOnlyDroplets}}
+  \item{\code{DoubleNegativeDroplets}}
+  \item{\code{DoublePositiveDroplets}} } If data from QuantaSoft is available,
+these can be imported using \code{\link{import_QS_files}}.}
 }
 \value{
 List of parameter estimates for the simple CASLTE model. This should
