@@ -1,7 +1,7 @@
 # training model - snapshot
 
     Code
-      train_simple_ddpcr_model(training_samples = training_samples)
+      train_simple_ddpcr_model(background_samples = background_samples)
     Output
       $a_est
       [1] 5.125098e-07

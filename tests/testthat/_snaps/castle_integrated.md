@@ -1,7 +1,7 @@
 # training model - snapshot
 
     Code
-      train_integrated_ddpcr_model(training_samples = training_samples,
+      train_integrated_ddpcr_model(background_samples = background_samples,
         abc_grid_resolution = abc_grid_resolution)
     Output
       $a_est

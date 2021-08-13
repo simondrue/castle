@@ -1,7 +1,7 @@
 test_that(
   "training model - snapshot",
   {
-    training_samples <- data.frame(
+    background_samples <- data.frame(
       WildtypeOnlyDroplets = c(10, 20, 30, 0),
       MutantOnlyDroplets = c(1, 2, 3, 0),
       DoubleNegativeDroplets = c(30, 30, 30, 30),
@@ -13,7 +13,7 @@ test_that(
     # Check whats in a model
     expect_snapshot(
       train_integrated_ddpcr_model(
-        training_samples = training_samples,
+        background_samples = background_samples,
         abc_grid_resolution = abc_grid_resolution
       )
     )
@@ -48,7 +48,7 @@ test_that(
       l = l_high, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
     )
 
-    training_samples <- rbind(l_low_df, l_mid_df, l_high_df)
+    background_samples <- rbind(l_low_df, l_mid_df, l_high_df)
 
     # Positive sample
     test_sample_positive <-
@@ -64,7 +64,7 @@ test_that(
 
     # Train model
     trained_integrated_model <- train_integrated_ddpcr_model(
-      training_samples = training_samples,
+      background_samples = background_samples,
       abc_grid_resolution = 10
     )
 

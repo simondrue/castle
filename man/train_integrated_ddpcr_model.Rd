@@ -4,10 +4,10 @@
 \alias{train_integrated_ddpcr_model}
 \title{Train integrated CASTLE model}
 \usage{
-train_integrated_ddpcr_model(training_samples, abc_grid_resolution = 25)
+train_integrated_ddpcr_model(background_samples, abc_grid_resolution = 25)
 }
 \arguments{
-\item{training_samples}{\code{data.frame} with cancer negative training
+\item{background_samples}{\code{data.frame} with cancer negative training
   samples as rows. At least the following columns should be present:
     \itemize{
       \item{\code{WildtypeOnlyDroplets}}
