@@ -104,24 +104,28 @@ train_simple_ddpcr_model <- function(background_samples) {
 #' @return A \code{data.frame} with results from the CASTLE algorithm (parameter
 #'   estimates, CIs, p-values etc.) joined to the right of \code{test_samples}.
 #'   Following is the full list of information added:
-#'   \itemize{
-#'     \item mutant_molecules_per_droplet
-#'     \item wildtype_molecules_per_droplet
-#'     \item p_val
-#'     \item test_statistic
-#'     \item mutation_detected
-#'     \item allele_frequency
-#'     \item total_mutant_molecules
-#'     \item total_wildtype_molecules
-#'     \item mutant_molecules_per_droplet_CI_lower
-#'     \item mutant_molecules_per_droplet_CI_upper
-#'     \item allele_frequency_CI_lower
-#'     \item allele_frequency_CI_upper
-#'     \item total_mutant_molecules_CI_lower
-#'     \item total_mutant_molecules_CI_upper
-#'     \item wildtype_molecules_per_droplet_CI_lower
-#'     \item wildtype_molecules_per_droplet_CI_upper
-#'   }
+#'   \describe{ \item{\code{test_statistic}/\code{p_val}}{Log-likelihood-ratio
+#'   test statistic/p-value from the statistical test for the presence of mutant
+#'   DNA (H0: No mutant DNA, HA: Mutant DNA present).}
+#'   \item{\code{mutation_detected}}{Logical. TRUE if the mutation is detected
+#'   i.e. if the p-value < \code{alpha}.}
+#'   \item{\code{allele_frequency}}{Estimated allele frequency of the mutant allele (error corrected).}
+#'   \item{\code{allele_frequency_CI_[lower|upper]}}{Confidence interval for
+#'   \code{allele_frequency}.}
+#'   \item{\code{mutant_molecules_per_droplet}}{Estimated number of mutant
+#'   molecules per droplet (error corrected).}
+#'   \item{\code{mutant_molecules_per_droplet_CI_[lower|upper]}}{Confidence
+#'   interval for \code{mutant_molecules_per_droplet}.}
+#'   \item{\code{wildtype_molecules_per_droplet}}{Estimated number of wildtype
+#'   molecules per droplet.}
+#'   \item{\code{wildtype_molecules_per_droplet_CI_[lower|upper]}}{Confidence
+#'   interval for \code{wildtype_molecules_per_droplet}.}
+#'   \item{\code{total_mutant_molecules}}{Estimated total number of mutant
+#'   molecules in sample (error corrected).}
+#'   \item{\code{total_mutant_molecules_CI_[lower|upper]}}{Confidence interval
+#'   for \code{total_mutant_molecules}.}
+#'   \item{\code{total_wildtype_molecules}}{Estimated number of wildtype
+#'   molecules per droplet.} }
 #'
 #' @seealso \code{\link{train_simple_ddpcr_model}}
 #' @export
