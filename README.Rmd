@@ -38,7 +38,7 @@ devtools::install_github("simondrue/castle")
 In this section we will go through a typical analysis workflow using the `castle` package:
 
 1. How to load a set of droplet counts from a QuantaSoft dataset. For this the data needs to be in `.csv`-format. 
-2. Training an model for the CASTLE algorithm. This is done by analyzing the (assay) specific pattern of errors in a set of negative (background) samples.
+2. Training a model for the CASTLE algorithm. This is done by analyzing the (assay) specific pattern of errors in a set of negative (background) samples.
 3. Analyze some samples of interest for the presence of a mutation, by utilizing the CASTLE algorithm with the model trained above. 
 
 The first thing we need to do is load the packages we need for the analysis:
@@ -169,14 +169,14 @@ test_res %>%
   dplyr::filter(Sample %in% c("Plasma_B")) %>%
   dplyr::select(FileName, Sample, p_val, mutation_detected)
 ```
+We now see that the test indicates that the mutation is no longer present in any of the patients, which is consistent with the tumor being removed by surgery. 
 
 The full list of information available in the analysis results is:
 
 ```{r, echo=FALSE}
 colnames(test_res)
 ```
-
-We now see that the test indicates that the mutation is no longer present in any of the patients, which is consistent with the tumor being removed by surgery. 
+The results can be exported to `.csv` format via the function `write_csv(x = test_res, file = "your/file/path)`.
 
 ## Note 
 Alternatively the functions `train_integrated_ddpcr_model` and `test_tumor_sample_simple` are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information. 

@@ -35,9 +35,9 @@ In this section we will go through a typical analysis workflow using the
 
 1.  How to load a set of droplet counts from a QuantaSoft dataset. For
     this the data needs to be in `.csv`-format.
-2.  Training an model for the CASTLE algorithm. This is done by
-    analyzing the (assay) specific pattern of errors in a set of
-    negative (background) samples.
+2.  Training a model for the CASTLE algorithm. This is done by analyzing
+    the (assay) specific pattern of errors in a set of negative
+    (background) samples.
 3.  Analyze some samples of interest for the presence of a mutation, by
     utilizing the CASTLE algorithm with the model trained above.
 
@@ -262,6 +262,10 @@ test_res %>%
 | patient\_1\_plasma\_KRAS\_G12D.csv | Plasma\_B | 0.3061083 | FALSE              |
 | patient\_2\_plasma\_KRAS\_G12D.csv | Plasma\_B | 0.2424636 | FALSE              |
 
+We now see that the test indicates that the mutation is no longer
+present in any of the patients, which is consistent with the tumor being
+removed by surgery.
+
 The full list of information available in the analysis results is:
 
     #>  [1] "FileName"                               
@@ -294,9 +298,8 @@ The full list of information available in the analysis results is:
     #> [28] "wildtype_molecules_per_droplet_CI_lower"
     #> [29] "wildtype_molecules_per_droplet_CI_upper"
 
-We now see that the test indicates that the mutation is no longer
-present in any of the patients, which is consistent with the tumor being
-removed by surgery.
+The results can be exported to `.csv` format via the function
+`write_csv(x = test_res, file = "your/file/path)`.
 
 ## Note
 
@@ -361,5 +364,5 @@ sim_test_res %>% select(
 
 | Sample   | p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
 |:---------|-------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
-| Positive |      0 | TRUE               |                 113.0015 |                            87.68354 |                          142.757970 |
-| Negative |      1 | FALSE              |                   0.0000 |                             0.00000 |                            3.317448 |
+| Positive |      0 | TRUE               |                 134.2272 |                            106.4461 |                          166.450423 |
+| Negative |      1 | FALSE              |                   0.0000 |                              0.0000 |                            3.317448 |
