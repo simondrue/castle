@@ -1,5 +1,5 @@
 ---
-title: "castle"
+title: "Introduction to CASTLE"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{castle}
@@ -13,8 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-## Quickstart guide
 
 In this section we will go through a typical analysis workflow using the `castle` package:
 
@@ -159,7 +157,7 @@ colnames(test_res)
 ```
 The results can be exported to `.csv` format via the function `write_csv(x = test_res, file = "your/file/path)`.
 
-## Note 
+### Note 
 Alternatively the functions `train_integrated_ddpcr_model` and `test_tumor_sample_simple` are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information. 
 
 ## Simulating data
