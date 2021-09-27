@@ -1,0 +1,7 @@
+url: https://simondrue.github.io/castle/
+template:
+  params:
+    bootstrap: 4
+    bootswatch: morph
+navbar:
+  type: inverse
