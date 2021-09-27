@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa-chess-rook fa-lg"></span>
      
   </a>
 </li>
@@ -80,6 +80,9 @@
 
     
     
+<div id="analysing-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#analysing-data" class="anchor"></a>Analysing data</h2>
 <p>In this section we will go through a typical analysis workflow using the <code>castle</code> package:</p>
 <ol style="list-style-type: decimal">
 <li>How to load a set of droplet counts from a QuantaSoft dataset. For this the data needs to be in <code>.csv</code>-format.</li>
@@ -277,6 +280,7 @@
 <a href="#note" class="anchor"></a>Note</h3>
 <p>Alternatively the functions <code>train_integrated_ddpcr_model</code> and <code>test_tumor_sample_simple</code> are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information.</p>
 </div>
+</div>
 <div id="simulating-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulating-data" class="anchor"></a>Simulating data</h2>
@@ -325,11 +329,11 @@
   <span class="va">total_mutant_molecules</span>, <span class="va">total_mutant_molecules_CI_lower</span>, <span class="va">total_mutant_molecules_CI_upper</span>
 <span class="op">)</span>
 <span class="co">#&gt;     Sample p_val mutation_detected total_mutant_molecules</span>
-<span class="co">#&gt; 1 Positive     0              TRUE               138.2466</span>
+<span class="co">#&gt; 1 Positive     0              TRUE               146.2966</span>
 <span class="co">#&gt; 2 Negative     1             FALSE                 0.0000</span>
 <span class="co">#&gt;   total_mutant_molecules_CI_lower total_mutant_molecules_CI_upper</span>
-<span class="co">#&gt; 1                        110.0183                      170.917935</span>
-<span class="co">#&gt; 2                          0.0000                        3.317448</span></code></pre></div>
+<span class="co">#&gt; 1                         117.192                      179.845502</span>
+<span class="co">#&gt; 2                           0.000                        3.317448</span></code></pre></div>
 </div>
   </div>
 

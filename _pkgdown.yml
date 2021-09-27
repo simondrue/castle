@@ -1,4 +1,9 @@
 url: https://simondrue.github.io/castle/
+navbar:
+  components:
+    home:
+       icon: "fas fa-chess-rook fa-lg"
+       href: index.html
 template:
   params:
     bootswatch: paper

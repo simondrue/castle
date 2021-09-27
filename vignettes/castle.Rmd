@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Analysing data
 In this section we will go through a typical analysis workflow using the `castle` package:
 
 1. How to load a set of droplet counts from a QuantaSoft dataset. For this the data needs to be in `.csv`-format. 
