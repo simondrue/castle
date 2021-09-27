@@ -28,6 +28,8 @@ You can install the R -package from
 devtools::install_github("simondrue/castle")
 ```
 
+## Usage
+
 ## Quickstart guide
 
 In this section we will go through a typical analysis workflow using the
@@ -362,7 +364,7 @@ sim_test_res %>% select(
 )
 ```
 
-| Sample   | p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
-|:---------|-------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
-| Positive |      0 | TRUE               |                 134.2272 |                            106.4461 |                          166.450423 |
-| Negative |      1 | FALSE              |                   0.0000 |                              0.0000 |                            3.317448 |
+| Sample   |     p\_val | mutation\_detected | total\_mutant\_molecules | total\_mutant\_molecules\_CI\_lower | total\_mutant\_molecules\_CI\_upper |
+|:---------|-----------:|:-------------------|-------------------------:|------------------------------------:|------------------------------------:|
+| Positive | 0.00000000 | TRUE               |              117.0936889 |                            91.29042 |                          147.336154 |
+| Negative | 0.02582986 | FALSE              |                0.9683525 |                             0.00000 |                            6.099304 |

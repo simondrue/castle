@@ -33,6 +33,9 @@ You can install the R -package from [GitHub](https://github.com/simondrue/castle
 # install.packages("devtools")
 devtools::install_github("simondrue/castle")
 ```
+
+## Usage
+
 ## Quickstart guide
 
 In this section we will go through a typical analysis workflow using the `castle` package:
