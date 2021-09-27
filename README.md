@@ -54,5 +54,5 @@ test_res <- test_tumor_sample_integrated(
 ```
 
 To see a full example of how to do this with real world data, please see
-[the full vignette](articles/castle.html) which goes through a full
-analysis of a real world dataset.
+`vignette("castle")` which goes through a full analysis of a real world
+dataset.
