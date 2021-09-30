@@ -3,8 +3,8 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   castle: castle.html
-last_built: 2021-09-27T12:22Z
+last_built: 2021-09-30T07:23Z
 urls:
-  reference: https://simondrue.github.io/castle//reference
-  article: https://simondrue.github.io/castle//articles
+  reference: https://simondrue.github.io/castle/reference
+  article: https://simondrue.github.io/castle/articles
 
