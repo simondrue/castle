@@ -25,7 +25,7 @@ test_that(
   {
     set.seed(42)
 
-    # Simulate data
+    # Simulate training data
     # Parameters
     l_low <- 0.1
     l_mid <- 0.5
@@ -38,29 +38,17 @@ test_that(
     n_samples <- 30
 
     # Training data
-    l_low_df <- simulate_droplet_counts(
-      l = l_low, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
-    )
-    l_mid_df <- simulate_droplet_counts(
-      l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
-    )
-    l_high_df <- simulate_droplet_counts(
-      l = l_high, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
-    )
-
-    background_samples <- rbind(l_low_df, l_mid_df, l_high_df)
-
-    # Positive sample
-    test_sample_positive <-
+    background_samples <- rbind(
       simulate_droplet_counts(
-        l = l_mid, r = 0.1, a = a, b = b, c = c, n_drops = n_drops
-      )
-
-    # Negative sample
-    test_sample_negative <-
+        l = l_low, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
+      ),
       simulate_droplet_counts(
-        l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops
+        l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
+      ),
+      simulate_droplet_counts(
+        l = l_high, r = 0, a = a, b = b, c = c, n_drops = n_drops, n_samples = n_samples
       )
+    )
 
     # Train model
     trained_integrated_model <- train_integrated_ddpcr_model(
@@ -69,7 +57,12 @@ test_that(
     )
 
     # Test on "known" samples
-    # Positive
+    # Positive sample
+    test_sample_positive <-
+      simulate_droplet_counts(
+        l = l_mid, r = 0.1, a = a, b = b, c = c, n_drops = n_drops
+      )
+
     positive_test_res <- test_tumor_sample_integrated(
       test_samples = test_sample_positive,
       integrated_model = trained_integrated_model
@@ -77,14 +70,32 @@ test_that(
 
     expect_true(positive_test_res$mutation_detected)
 
+    # Negative sample
+    test_sample_negative <-
+      simulate_droplet_counts(
+        l = l_mid, r = 0, a = a, b = b, c = c, n_drops = n_drops
+      )
 
-    # Negative
     negative_test_res <- test_tumor_sample_integrated(
       test_samples = test_sample_negative,
       integrated_model = trained_integrated_model
     )
 
     expect_false(negative_test_res$mutation_detected)
+
+    # High mutational content
+    test_sample_high_ctdna <-
+      simulate_droplet_counts(
+        l = l_mid, r = 2, a = a, b = b, c = c, n_drops = n_drops
+      )
+
+    expect_error(
+      test_tumor_sample_integrated(
+        test_samples = test_sample_high_ctdna,
+        integrated_model = trained_integrated_model
+      ),
+      NA
+    )
 
     # Multiple samples
     multiple_test_res <- test_tumor_sample_integrated(
@@ -95,7 +106,6 @@ test_that(
     # Dimensions
     expect_equal(nrow(multiple_test_res), 2)
     expect_snapshot(multiple_test_res)
-
 
     # Consistent with single tests
     expect_true(all(multiple_test_res[1, ] == positive_test_res))

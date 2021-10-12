@@ -146,20 +146,32 @@ get_r_CI_integrated <- function(r_est, l_est,
   }
 
   # Find confidence intervals
+
   # Lower bound
-  if (ll_ratio_int(TOL_0) > stats::qchisq(1 - alpha, 1)) {
+  if (ll_ratio_int(TOL_0) < stats::qchisq(1 - alpha, 1)) {
+    # If r=0 is not significant -> Set lower bound to 0
+    lower <- 0
+  } else {
     uni_res <- stats::uniroot(function(x) ll_ratio_int(x) - stats::qchisq(1 - alpha, 1),
       interval = c(TOL_0, r_est),
+      extendInt = "downX",
       tol = TOL_0
     )
     lower <- uni_res$root
-  } else {
-    lower <- 0
   }
 
   # Upper bound
+  # Get rough estimate (similar to l)
+  r_CI_rough <- get_l_CI(
+    N_M_only = N_WT_only, N_WT_only = N_M_only,
+    N_d_neg = N_d_neg, N_d_pos = N_d_pos, alpha = alpha
+  )
+
+  # Check is rough estimate is smaller that r_est
+  r_CI_upper_rough <- max(r_CI_rough$upper, r_est + TOL_0)
+
   uni_res <- stats::uniroot(function(x) ll_ratio_int(x) - stats::qchisq(1 - alpha, 1),
-    interval = c(r_est, 1),
+    interval = c(r_est, r_CI_upper_rough),
     tol = TOL_0,
     extendInt = "upX"
   )
