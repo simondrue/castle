@@ -42,7 +42,7 @@ training_samples <- import_QS_files(training_data_path)
 
 # Train model
 trained_model <- train_integrated_ddpcr_model(
-  background_samples = clean_background_samples
+  background_samples = training_samples
 )
 
 # Test some samples

@@ -286,7 +286,8 @@
 <a href="#simulating-data" class="anchor"></a>Simulating data</h2>
 <p>In the package the function <code>simulate_droplet_counts</code> for simulating droplet counts from the statistical model that CASTLE is based on is also provided. Here we will simulate a positive and negative sample based on the parameters learned above, and test them using <code>test_tumor_sample_integrated</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># DNA concentration (molecules per droplet)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
+<span class="co"># DNA concentration (molecules per droplet)</span>
 <span class="va">l</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># WT</span>
 <span class="va">r_positive</span> <span class="op">&lt;-</span> <span class="fl">0.01</span> <span class="co"># M</span>
 <span class="va">r_negative</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># M</span>
@@ -328,12 +329,12 @@
   <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span>,
   <span class="va">total_mutant_molecules</span>, <span class="va">total_mutant_molecules_CI_lower</span>, <span class="va">total_mutant_molecules_CI_upper</span>
 <span class="op">)</span>
-<span class="co">#&gt;     Sample p_val mutation_detected total_mutant_molecules</span>
-<span class="co">#&gt; 1 Positive     0              TRUE               144.3183</span>
-<span class="co">#&gt; 2 Negative     1             FALSE                 0.0000</span>
+<span class="co">#&gt;     Sample     p_val mutation_detected total_mutant_molecules</span>
+<span class="co">#&gt; 1 Positive 0.0000000              TRUE            144.3065735</span>
+<span class="co">#&gt; 2 Negative 0.3989545             FALSE              0.9685377</span>
 <span class="co">#&gt;   total_mutant_molecules_CI_lower total_mutant_molecules_CI_upper</span>
-<span class="co">#&gt; 1                        115.4304                      177.649882</span>
-<span class="co">#&gt; 2                          0.0000                        3.317448</span></code></pre></div>
+<span class="co">#&gt; 1                        115.4188                      177.638344</span>
+<span class="co">#&gt; 2                          0.0000                        7.088729</span></code></pre></div>
 </div>
   </div>
 

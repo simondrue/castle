@@ -166,6 +166,7 @@ Alternatively the functions `train_integrated_ddpcr_model` and `test_tumor_sampl
 In the package the function `simulate_droplet_counts` for simulating droplet counts from the statistical model that CASTLE is based on is also provided. Here we will simulate a positive and negative sample based on the parameters learned above, and test them using `test_tumor_sample_integrated`:
 
 ```{r}
+set.seed(42)
 # DNA concentration (molecules per droplet)
 l <- 0.5 # WT
 r_positive <- 0.01 # M
