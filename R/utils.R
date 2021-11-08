@@ -18,9 +18,32 @@ sum_log_p <- function(lp_vec) {
   return(lp_max + log(sum(exp(lp_vec - lp_max))))
 }
 
+check_background_samples <- function(background_samples) {
+  # Warn if background_samples has positive controls, NTCs or blanks
+
+  for (target_type in c("Positive Control", "NTC", "Blank")) {
+    for (ch_idx in c(1, 2)) {
+      # Get target types from relevant channel
+      if (ch_idx == 1) {
+        samples_w_wrong_target_type <- which(background_samples$Ch1TargetType == target_type)
+      } else {
+        samples_w_wrong_target_type <- which(background_samples$Ch2TargetType == target_type)
+      }
+
+      if (length(samples_w_wrong_target_type) > 0) {
+        warning(paste0(
+          "Samples in row(s) [", paste0(samples_w_wrong_target_type, collapse = ","), "] of the background samples are marked as Ch", ch_idx, "TargetType='",
+          target_type,
+          "'. If this is not intensional, these should be removed!"
+        ))
+      }
+    }
+  }
+}
+
 check_input_samples <- function(samples) {
   # Check if expected columns are present
-  expected_columns = c("WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets", "DoublePositiveDroplets")
+  expected_columns <- c("WildtypeOnlyDroplets", "MutantOnlyDroplets", "DoubleNegativeDroplets", "DoublePositiveDroplets")
   if (!all(expected_columns %in% colnames(samples))) {
     missing_cols <-
       setdiff(expected_columns, colnames(samples))

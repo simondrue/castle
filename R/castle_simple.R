@@ -24,6 +24,9 @@ train_simple_ddpcr_model <- function(background_samples) {
   # Check input
   check_input_samples(background_samples)
 
+  # Check if samples are appropriate for training
+  check_background_samples(background_samples)
+
   # Unpack data
   N_WT_only_vec <- background_samples$WildtypeOnlyDroplets
   N_M_only_vec <- background_samples$MutantOnlyDroplets

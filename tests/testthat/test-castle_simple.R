@@ -16,6 +16,40 @@ test_that("training model - snapshot", {
   ))
 })
 
+test_that("training model - Catch wrong sample types", {
+  background_samples <- data.frame(
+    WildtypeOnlyDroplets = c(1, 1, 1),
+    MutantOnlyDroplets = c(1, 2, 3),
+    DoubleNegativeDroplets = c(1, 2, 3),
+    DoublePositiveDroplets = c(1, 2, 3)
+  )
+
+  # No error
+  background_samples$Ch1TargetType <- c("Unknown")
+  background_samples$Ch2TargetType <- c("Unknown")
+  expect_warning(train_simple_ddpcr_model(background_samples = background_samples), NA)
+
+  # Check channel 1
+  background_samples$Ch2TargetType <- c("Unknown")
+  for (wrong_target_type in c("Positive Control", "NTC", "Blank")) {
+    background_samples$Ch1TargetType <- c("Unknown", "Unknown", wrong_target_type)
+    expect_warning(
+      train_simple_ddpcr_model(background_samples = background_samples),
+      paste0("Ch1.*", wrong_target_type, ".*remove")
+    )
+  }
+
+  # Check channel 2
+  background_samples$Ch1TargetType <- c("Unknown")
+  for (wrong_target_type in c("Positive Control", "NTC", "Blank")) {
+    background_samples$Ch2TargetType <- c("Unknown", "Unknown", wrong_target_type)
+    expect_warning(
+      train_simple_ddpcr_model(background_samples = background_samples),
+      paste0("Ch2.*", wrong_target_type, ".*remove")
+    )
+  }
+})
+
 test_that("simulation - training - test", {
   set.seed(42)
 

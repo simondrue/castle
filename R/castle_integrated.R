@@ -32,19 +32,17 @@
 #' @export
 train_integrated_ddpcr_model <- function(background_samples,
                                          abc_grid_resolution = 25) {
-  # Check input
-  check_input_samples(background_samples)
+  # Train parameters (get MLE on training data)
+  # NOTE: This checks validity of the input!
+  simple_model <- train_simple_ddpcr_model(
+    background_samples = background_samples
+  )
 
   # Unpack data
   N_WT_only_vec <- background_samples$WildtypeOnlyDroplets
   N_M_only_vec <- background_samples$MutantOnlyDroplets
   N_d_neg_vec <- background_samples$DoubleNegativeDroplets
   N_d_pos_vec <- background_samples$DoublePositiveDroplets
-
-  # Train parameters (get MLE on training data)
-  simple_model <- train_simple_ddpcr_model(
-    background_samples = background_samples
-  )
 
   # Get parameters from model
   l_est_vec <- simple_model$l_est_vec
