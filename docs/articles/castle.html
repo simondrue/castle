@@ -25,6 +25,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,18 +39,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">castle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-chess-rook fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/castle.html">Get started</a>
 </li>
@@ -58,7 +54,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/simondrue/castle/">
+  <a href="https://github.com/simondrue/castle/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -73,22 +69,22 @@
 
       
 
-      </header><script src="castle_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to CASTLE</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/simondrue/castle/blob/master/vignettes/castle.Rmd"><code>vignettes/castle.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/simondrue/castle/blob/HEAD/vignettes/castle.Rmd" class="external-link"><code>vignettes/castle.Rmd</code></a></small>
       <div class="hidden name"><code>castle.Rmd</code></div>
 
     </div>
 
     
     
-<div id="analysing-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#analysing-data" class="anchor"></a>Analysing data</h2>
+<div class="section level2">
+<h2 id="analysing-data">Analysing data<a class="anchor" aria-label="anchor" href="#analysing-data"></a>
+</h2>
 <p>In this section we will go through a typical analysis workflow using the <code>castle</code> package:</p>
 <ol style="list-style-type: decimal">
 <li>How to load a set of droplet counts from a QuantaSoft dataset. For this the data needs to be in <code>.csv</code>-format.</li>
@@ -97,9 +93,9 @@
 </ol>
 <p>The first thing we need to do is load the packages we need for the analysis:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/simondrue/castle">castle</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi.org/10.1093/clinchem/hvab274" class="external-link">castle</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: readr</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'dplyr'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -108,44 +104,44 @@
 <span class="co">#&gt; The following objects are masked from 'package:base':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span></code></pre></div>
-<div id="loading-quantasoft-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#loading-quantasoft-data" class="anchor"></a>Loading QuantaSoft data</h3>
+<div class="section level3">
+<h3 id="loading-quantasoft-data">Loading QuantaSoft data<a class="anchor" aria-label="anchor" href="#loading-quantasoft-data"></a>
+</h3>
 <p>We start by loading a QuantaSoft dataset in <code>.csv</code>-format using the included <code>import_QS_files</code>-function. Here we will use the example data included in the package, where we have both negative samples of different concentrations (training samples) and some test samples available for a KRAS G12D assay. For this assay Ch1 was used for measuring the mutant signal, which is set using the flag <code>Ch1_is_mutation = TRUE</code>. If Ch2 was used this is simply set to <code>FALSE</code>. Data is loaded like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">path_to_my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"path/to/a/csv_file"</span>, <span class="st">"path/to/a/folder/with/csv_files/"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">path_to_my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"path/to/a/csv_file"</span>, <span class="st">"path/to/a/folder/with/csv_files/"</span><span class="op">)</span>
 <span class="va">my_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import_QS_files.html">import_QS_files</a></span><span class="op">(</span><span class="va">path_to_my_data</span><span class="op">)</span></code></pre></div>
 <p>For this example we will load the training samples that are bundled in the <code>castle</code>-package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">path_to_my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_data/"</span>, <span class="st">"background_data_KRAS_G12D.csv"</span>, package <span class="op">=</span> <span class="st">"castle"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">path_to_my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_data/"</span>, <span class="st">"background_data_KRAS_G12D.csv"</span>, package <span class="op">=</span> <span class="st">"castle"</span><span class="op">)</span>
 <span class="va">background_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import_QS_files.html">import_QS_files</a></span><span class="op">(</span><span class="va">path_to_my_data</span>, Ch1_is_mutation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>The first 5 samples/wells in <code>background_samples</code> looks like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">background_samples</span>, <span class="fl">5</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 5 × 13</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">background_samples</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 13</span></span>
 <span class="co">#&gt;   FileName    Sample  Well  Ch1TargetType Ch2TargetType Target  DoubleNegativeD…</span>
-<span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 background… NC20_1… A01   Unknown       Unknown       KRAS_G…             2415</span>
-<span class="co">#&gt; 2 background… NC21_1… B01   Unknown       Unknown       KRAS_G…             1534</span>
-<span class="co">#&gt; 3 background… NC22_1… C01   Unknown       Unknown       KRAS_G…             2041</span>
-<span class="co">#&gt; 4 background… NC23_1… D01   Unknown       Unknown       KRAS_G…              183</span>
-<span class="co">#&gt; 5 background… NC24_1… E01   Unknown       Unknown       KRAS_G…             1487</span>
-<span class="co">#&gt; # … with 6 more variables: WildtypeOnlyDroplets &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   MutantOnlyDroplets &lt;dbl&gt;, DoublePositiveDroplets &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   TotalDroplets &lt;dbl&gt;, NumberOfMergedWells &lt;dbl&gt;, MergedWells &lt;lgl&gt;</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> background… NC20_1… A01   Unknown       Unknown       KRAS_G…             <span style="text-decoration: underline;">2</span>415</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> background… NC21_1… B01   Unknown       Unknown       KRAS_G…             <span style="text-decoration: underline;">1</span>534</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> background… NC22_1… C01   Unknown       Unknown       KRAS_G…             <span style="text-decoration: underline;">2</span>041</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> background… NC23_1… D01   Unknown       Unknown       KRAS_G…              183</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> background… NC24_1… E01   Unknown       Unknown       KRAS_G…             <span style="text-decoration: underline;">1</span>487</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 6 more variables: WildtypeOnlyDroplets &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   MutantOnlyDroplets &lt;dbl&gt;, DoublePositiveDroplets &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   TotalDroplets &lt;dbl&gt;, NumberOfMergedWells &lt;dbl&gt;, MergedWells &lt;lgl&gt;</span></span></code></pre></div>
 <p>Note that besides some metadata (file name, target etc.) for each sample, the dataset contains the columns “WildtypeOnlyDroplets”, “MutantOnlyDroplets”, “DoubleNegativeDroplets” and “DoublePositiveDroplets”. These are the counts of the four different kinds of droplets for each sample based on the two signals in Ch1 and Ch2. The following model training and statistical tests are based solely on these counts.</p>
 </div>
-<div id="training-a-model-for-castle" class="section level3">
-<h3 class="hasAnchor">
-<a href="#training-a-model-for-castle" class="anchor"></a>Training a model for CASTLE</h3>
+<div class="section level3">
+<h3 id="training-a-model-for-castle">Training a model for CASTLE<a class="anchor" aria-label="anchor" href="#training-a-model-for-castle"></a>
+</h3>
 <p>To train the model we are only interested in the negative samples. Ideally these should cover the range of different concentrations of DNA that the trained model is expected to encounter in future test samples. Before training we start by removing the empty samples (“NTC”) and positive controls from the training dataset we loaded above:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Remove control samples ("NTC" and "Positive Control")</span>
 <span class="va">clean_background_samples</span> <span class="op">&lt;-</span>
-  <span class="va">background_samples</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
-    <span class="op">!</span><span class="op">(</span><span class="va">Ch1TargetType</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NTC"</span>, <span class="st">"Positive Control"</span><span class="op">)</span><span class="op">)</span>,
-    <span class="op">!</span><span class="op">(</span><span class="va">Ch2TargetType</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NTC"</span>, <span class="st">"Positive Control"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">background_samples</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>
+    <span class="op">!</span><span class="op">(</span><span class="va">Ch1TargetType</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NTC"</span>, <span class="st">"Positive Control"</span><span class="op">)</span><span class="op">)</span>,
+    <span class="op">!</span><span class="op">(</span><span class="va">Ch2TargetType</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NTC"</span>, <span class="st">"Positive Control"</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
 <p>The cleaned data is then used for model training using the function <code>train_simple_ddpcr_model</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -154,15 +150,15 @@
 <span class="op">)</span></code></pre></div>
 <p>The object <code>trained_model</code> is simply a list of parameters used in the statistical model in CASTLE.</p>
 </div>
-<div id="testing-some-samples-with-castle" class="section level3">
-<h3 class="hasAnchor">
-<a href="#testing-some-samples-with-castle" class="anchor"></a>Testing some samples with CASTLE</h3>
+<div class="section level3">
+<h3 id="testing-some-samples-with-castle">Testing some samples with CASTLE<a class="anchor" aria-label="anchor" href="#testing-some-samples-with-castle"></a>
+</h3>
 <p>For testing we will use a variety of samples from two different patients, who have undergone curative surgery for colorectal cancer. We start by loading the data from these patients. To load the data we will again use the function <code>import_QS_files</code>. But this time, data from some of the samples is distributed across multiple wells. These can be merged together using the flag <code>merge_wells = 'yes'</code> (see <code><a href="../reference/import_QS_files.html">?import_QS_files</a></code> for other methods for merging). Furthermore samples across multiple files can also be merged using the flag <code>merge_files = TRUE</code> if necessary.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Path to example data in the package</span>
-<span class="va">path_to_my_test_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
+<span class="va">path_to_my_test_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>
   <span class="st">"extdata/example_data/test_samples"</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
     <span class="st">"patient_1_plasma_KRAS_G12D.csv"</span>,
     <span class="st">"patient_2_plasma_KRAS_G12D.csv"</span>
   <span class="op">)</span>,
@@ -184,31 +180,31 @@
 <span class="op">)</span></code></pre></div>
 <p>We will start by looking at some of the results for the tumor and PBL (white blood cells) sample from each patient:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test_res</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Tumor"</span>, <span class="st">"PBL"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 4 × 4</span>
+<code class="sourceCode R"><span class="va">test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tumor"</span>, <span class="st">"PBL"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 4</span></span>
 <span class="co">#&gt;   FileName                       Sample p_val mutation_detected</span>
-<span class="co">#&gt;   &lt;chr&gt;                          &lt;chr&gt;  &lt;dbl&gt; &lt;lgl&gt;            </span>
-<span class="co">#&gt; 1 patient_1_plasma_KRAS_G12D.csv Tumor  0     TRUE             </span>
-<span class="co">#&gt; 2 patient_1_plasma_KRAS_G12D.csv PBL    1     FALSE            </span>
-<span class="co">#&gt; 3 patient_2_plasma_KRAS_G12D.csv Tumor  0     TRUE             </span>
-<span class="co">#&gt; 4 patient_2_plasma_KRAS_G12D.csv PBL    0.455 FALSE</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> patient_1_plasma_KRAS_G12D.csv Tumor  0     TRUE             </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> patient_1_plasma_KRAS_G12D.csv PBL    1     FALSE            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> patient_2_plasma_KRAS_G12D.csv Tumor  0     TRUE             </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> patient_2_plasma_KRAS_G12D.csv PBL    0.455 FALSE</span></code></pre></div>
 <p>From this, we clearly see that the mutation is present in the tumor from both of the patients and not in PBL. We can therefore use the mutation as a cancer-specific marker, and thus to check if the patient has residual disease after curative intent surgery. As a positive test, we start by looking at the “Plasma_A” sample of both patients, which is a blood sample collected before surgery:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test_res</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 × 4</span>
+<code class="sourceCode R"><span class="va">test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span>
 <span class="co">#&gt;   FileName                       Sample   p_val mutation_detected</span>
-<span class="co">#&gt;   &lt;chr&gt;                          &lt;chr&gt;    &lt;dbl&gt; &lt;lgl&gt;            </span>
-<span class="co">#&gt; 1 patient_1_plasma_KRAS_G12D.csv Plasma_A     0 TRUE             </span>
-<span class="co">#&gt; 2 patient_2_plasma_KRAS_G12D.csv Plasma_A     0 TRUE</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> patient_1_plasma_KRAS_G12D.csv Plasma_A     0 TRUE             </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> patient_2_plasma_KRAS_G12D.csv Plasma_A     0 TRUE</span></code></pre></div>
 <p>We see that these samples indicate that the mutation, and thus the tumor, is present in both patients, as expected. From the result we can also see the following estimates of properties of the ddPCR analysis and the ctDNA in the blood:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test_res</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>
     <span class="va">FileName</span>, <span class="va">Sample</span>,
     <span class="va">mutant_molecules_per_droplet</span>,
     <span class="va">wildtype_molecules_per_droplet</span>,
@@ -216,83 +212,83 @@
     <span class="va">mutant_molecules_per_droplet_CI_lower</span>, <span class="va">mutant_molecules_per_droplet_CI_upper</span>,
     <span class="va">wildtype_molecules_per_droplet_CI_lower</span>, <span class="va">wildtype_molecules_per_droplet_CI_upper</span>
   <span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 × 9</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 9</span></span>
 <span class="co">#&gt;   FileName      Sample  mutant_molecules_… wildtype_molecules… total_mutant_mol…</span>
-<span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;                &lt;dbl&gt;               &lt;dbl&gt;             &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 patient_1_pl… Plasma…           0.000242              0.224               21.3</span>
-<span class="co">#&gt; 2 patient_2_pl… Plasma…           0.00386               0.0960             376. </span>
-<span class="co">#&gt; # … with 4 more variables: mutant_molecules_per_droplet_CI_lower &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   mutant_molecules_per_droplet_CI_upper &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   wildtype_molecules_per_droplet_CI_lower &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   wildtype_molecules_per_droplet_CI_upper &lt;dbl&gt;</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> patient_1_pl… Plasma…           0.000<span style="text-decoration: underline;">242</span>              0.224               21.3</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> patient_2_pl… Plasma…           0.003<span style="text-decoration: underline;">86</span>               0.096<span style="text-decoration: underline;">0</span>             376. </span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 4 more variables: mutant_molecules_per_droplet_CI_lower &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   mutant_molecules_per_droplet_CI_upper &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   wildtype_molecules_per_droplet_CI_lower &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   wildtype_molecules_per_droplet_CI_upper &lt;dbl&gt;</span></span>
 
-<span class="va">test_res</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>
+<span class="va">test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Plasma_A"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>
     <span class="va">FileName</span>, <span class="va">Sample</span>,
     <span class="va">allele_frequency</span>,
     <span class="va">allele_frequency_CI_lower</span>, <span class="va">allele_frequency_CI_upper</span>
   <span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 × 5</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span>
 <span class="co">#&gt;   FileName        Sample  allele_frequency allele_frequency_… allele_frequency_…</span>
-<span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;              &lt;dbl&gt;              &lt;dbl&gt;              &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 patient_1_plas… Plasma…          0.00108           0.000576            0.00181</span>
-<span class="co">#&gt; 2 patient_2_plas… Plasma…          0.0387            0.0339              0.0438</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> patient_1_plas… Plasma…          0.001<span style="text-decoration: underline;">08</span>           0.000<span style="text-decoration: underline;">576</span>            0.001<span style="text-decoration: underline;">81</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> patient_2_plas… Plasma…          0.038<span style="text-decoration: underline;">7</span>            0.033<span style="text-decoration: underline;">9</span>              0.043<span style="text-decoration: underline;">8</span></span></code></pre></div>
 <p>We can then look what happens after the surgery. To do this we look at the blood samples marked as “Plasma_B”:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test_res</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Plasma_B"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 × 4</span>
+<code class="sourceCode R"><span class="va">test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Plasma_B"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">FileName</span>, <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span>
 <span class="co">#&gt;   FileName                       Sample   p_val mutation_detected</span>
-<span class="co">#&gt;   &lt;chr&gt;                          &lt;chr&gt;    &lt;dbl&gt; &lt;lgl&gt;            </span>
-<span class="co">#&gt; 1 patient_1_plasma_KRAS_G12D.csv Plasma_B 0.306 FALSE            </span>
-<span class="co">#&gt; 2 patient_2_plasma_KRAS_G12D.csv Plasma_B 0.242 FALSE</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> patient_1_plasma_KRAS_G12D.csv Plasma_B 0.306 FALSE            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> patient_2_plasma_KRAS_G12D.csv Plasma_B 0.242 FALSE</span></code></pre></div>
 <p>We now see that the test indicates that the mutation is no longer present in any of the patients, which is consistent with the tumor being removed by surgery.</p>
 <p>The full list of information available in the analysis results is:</p>
-<pre><code>#&gt;  [1] "FileName"                               
-#&gt;  [2] "Sample"                                 
-#&gt;  [3] "Well"                                   
-#&gt;  [4] "Ch1TargetType"                          
-#&gt;  [5] "Ch2TargetType"                          
-#&gt;  [6] "Target"                                 
-#&gt;  [7] "DoubleNegativeDroplets"                 
-#&gt;  [8] "WildtypeOnlyDroplets"                   
-#&gt;  [9] "MutantOnlyDroplets"                     
-#&gt; [10] "DoublePositiveDroplets"                 
-#&gt; [11] "TotalDroplets"                          
-#&gt; [12] "NumberOfMergedWells"                    
-#&gt; [13] "MergedWells"                            
-#&gt; [14] "mutant_molecules_per_droplet"           
-#&gt; [15] "wildtype_molecules_per_droplet"         
-#&gt; [16] "p_val"                                  
-#&gt; [17] "test_statistic"                         
-#&gt; [18] "mutation_detected"                      
-#&gt; [19] "allele_frequency"                       
-#&gt; [20] "total_mutant_molecules"                 
-#&gt; [21] "total_wildtype_molecules"               
-#&gt; [22] "mutant_molecules_per_droplet_CI_lower"  
-#&gt; [23] "mutant_molecules_per_droplet_CI_upper"  
-#&gt; [24] "allele_frequency_CI_lower"              
-#&gt; [25] "allele_frequency_CI_upper"              
-#&gt; [26] "total_mutant_molecules_CI_lower"        
-#&gt; [27] "total_mutant_molecules_CI_upper"        
-#&gt; [28] "wildtype_molecules_per_droplet_CI_lower"
-#&gt; [29] "wildtype_molecules_per_droplet_CI_upper"</code></pre>
+<pre><code><span class="co">#&gt;  [1] "FileName"                               </span>
+<span class="co">#&gt;  [2] "Sample"                                 </span>
+<span class="co">#&gt;  [3] "Well"                                   </span>
+<span class="co">#&gt;  [4] "Ch1TargetType"                          </span>
+<span class="co">#&gt;  [5] "Ch2TargetType"                          </span>
+<span class="co">#&gt;  [6] "Target"                                 </span>
+<span class="co">#&gt;  [7] "DoubleNegativeDroplets"                 </span>
+<span class="co">#&gt;  [8] "WildtypeOnlyDroplets"                   </span>
+<span class="co">#&gt;  [9] "MutantOnlyDroplets"                     </span>
+<span class="co">#&gt; [10] "DoublePositiveDroplets"                 </span>
+<span class="co">#&gt; [11] "TotalDroplets"                          </span>
+<span class="co">#&gt; [12] "NumberOfMergedWells"                    </span>
+<span class="co">#&gt; [13] "MergedWells"                            </span>
+<span class="co">#&gt; [14] "mutant_molecules_per_droplet"           </span>
+<span class="co">#&gt; [15] "wildtype_molecules_per_droplet"         </span>
+<span class="co">#&gt; [16] "p_val"                                  </span>
+<span class="co">#&gt; [17] "test_statistic"                         </span>
+<span class="co">#&gt; [18] "mutation_detected"                      </span>
+<span class="co">#&gt; [19] "allele_frequency"                       </span>
+<span class="co">#&gt; [20] "total_mutant_molecules"                 </span>
+<span class="co">#&gt; [21] "total_wildtype_molecules"               </span>
+<span class="co">#&gt; [22] "mutant_molecules_per_droplet_CI_lower"  </span>
+<span class="co">#&gt; [23] "mutant_molecules_per_droplet_CI_upper"  </span>
+<span class="co">#&gt; [24] "allele_frequency_CI_lower"              </span>
+<span class="co">#&gt; [25] "allele_frequency_CI_upper"              </span>
+<span class="co">#&gt; [26] "total_mutant_molecules_CI_lower"        </span>
+<span class="co">#&gt; [27] "total_mutant_molecules_CI_upper"        </span>
+<span class="co">#&gt; [28] "wildtype_molecules_per_droplet_CI_lower"</span>
+<span class="co">#&gt; [29] "wildtype_molecules_per_droplet_CI_upper"</span></code></pre>
 <p>The results can be exported to <code>.csv</code> format via the function <code>write_csv(x = test_res, file = "your/file/path)</code>.</p>
 </div>
-<div id="note" class="section level3">
-<h3 class="hasAnchor">
-<a href="#note" class="anchor"></a>Note</h3>
+<div class="section level3">
+<h3 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a>
+</h3>
 <p>Alternatively the functions <code>train_integrated_ddpcr_model</code> and <code>test_tumor_sample_simple</code> are used for training and testing respectively. These are based on a faster (and simpler) version of the CASTLE algorithm, but have very similar performance. See [1] for more information.</p>
 </div>
 </div>
-<div id="simulating-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simulating-data" class="anchor"></a>Simulating data</h2>
+<div class="section level2">
+<h2 id="simulating-data">Simulating data<a class="anchor" aria-label="anchor" href="#simulating-data"></a>
+</h2>
 <p>In the package the function <code>simulate_droplet_counts</code> for simulating droplet counts from the statistical model that CASTLE is based on is also provided. Here we will simulate a positive and negative sample based on the parameters learned above, and test them using <code>test_tumor_sample_integrated</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
 <span class="co"># DNA concentration (molecules per droplet)</span>
 <span class="va">l</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># WT</span>
 <span class="va">r_positive</span> <span class="op">&lt;-</span> <span class="fl">0.01</span> <span class="co"># M</span>
@@ -318,9 +314,9 @@
   <span class="op">)</span>
 
 
-<span class="va">simulated_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"Positive"</span>, <span class="va">test_sample_positive</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"Negative"</span>, <span class="va">test_sample_negative</span><span class="op">)</span>
+<span class="va">simulated_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"Positive"</span>, <span class="va">test_sample_positive</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"Negative"</span>, <span class="va">test_sample_negative</span><span class="op">)</span>
 <span class="op">)</span>
 
 
@@ -331,7 +327,7 @@
 <span class="op">)</span>
 
 <span class="co"># Print some relevant results</span>
-<span class="va">sim_test_res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>
+<span class="va">sim_test_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>
   <span class="va">Sample</span>, <span class="va">p_val</span>, <span class="va">mutation_detected</span>,
   <span class="va">total_mutant_molecules</span>, <span class="va">total_mutant_molecules_CI_lower</span>, <span class="va">total_mutant_molecules_CI_upper</span>
 <span class="op">)</span>
@@ -355,11 +351,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Simon Drue.</p>
+  <p></p>
+<p>Developed by Simon Drue, Tenna Henriksen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -367,6 +365,8 @@
 
   
 
+
+  
 
   </body>
 </html>

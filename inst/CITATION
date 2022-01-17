@@ -1,0 +1,29 @@
+bibentry(
+  bibtype = "Article",
+  title = "Error Characterization and Statistical Modeling Improves Circulating Tumor DNA Detection by Droplet Digital PCR",
+  author = c(
+    person(
+      given = "Tenna",
+      family = "Henriksen",
+      email = "tvh@clin.au.dk",
+      role = c("res", "aut"),
+      comment = c(ORCID = "0000-0002-8541-1735")
+    ),
+    person(
+      given = "Simon",
+      family = "Drue",
+      email = "simon.drue@clin.au.dk",
+      role = c("cre", "aut"),
+      comment = c(ORCID = "0000-0002-1401-6527")
+    ),
+    person("Amanda", "Frydendahl"),
+    person("Christina", "Demuth"),
+    person("Mads", "Rasmussen"),
+    person("Thomas", "Reinert"),
+    person("Jakob", "Pedersen"),
+    person("Claus", "Andersen")
+  ),
+  year = 2022,
+  journal = "Clinical Chemistry",
+  url = "https://doi.org/10.1093/clinchem/hvab274"
+)

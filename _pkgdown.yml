@@ -8,3 +8,9 @@ template:
   params:
     bootswatch: paper
     ganalytics: G-BXKXSJEHT8
+home:
+  sidebar:
+    structure: [links, citation, authors, license, dev]
+  links:
+  - text: Read the paper!
+    href: https://doi.org/10.1093/clinchem/hvab274

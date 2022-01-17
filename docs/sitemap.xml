@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://simondrue.github.io/castle/404.html</loc>
+  </url>
+  <url>
+    <loc>https://simondrue.github.io/castle/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://simondrue.github.io/castle/articles/castle.html</loc>
+  </url>
+  <url>
+    <loc>https://simondrue.github.io/castle/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://simondrue.github.io/castle/authors.html</loc>
+  </url>
+  <url>
     <loc>https://simondrue.github.io/castle/index.html</loc>
   </url>
   <url>
     <loc>https://simondrue.github.io/castle/reference/import_QS_files.html</loc>
+  </url>
+  <url>
+    <loc>https://simondrue.github.io/castle/reference/index.html</loc>
   </url>
   <url>
     <loc>https://simondrue.github.io/castle/reference/pipe.html</loc>
@@ -23,8 +41,5 @@
   </url>
   <url>
     <loc>https://simondrue.github.io/castle/reference/train_simple_ddpcr_model.html</loc>
-  </url>
-  <url>
-    <loc>https://simondrue.github.io/castle/articles/castle.html</loc>
   </url>
 </urlset>
