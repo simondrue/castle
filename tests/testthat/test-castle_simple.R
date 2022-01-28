@@ -125,6 +125,7 @@ test_that("simulation - training - test", {
   # Dimensions
   expect_equal(nrow(multiple_test_res), 2)
 
+
   # No CIs
   no_CIs_res <- test_tumor_sample_simple(
     test_samples = dplyr::bind_rows(test_sample_positive, test_sample_negative),
