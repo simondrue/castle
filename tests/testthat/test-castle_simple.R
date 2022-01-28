@@ -122,9 +122,8 @@ test_that("simulation - training - test", {
     alpha = 0.05
   )
 
-  # Snapshot
+  # Dimensions
   expect_equal(nrow(multiple_test_res), 2)
-  expect_snapshot(multiple_test_res)
 
   # No CIs
   no_CIs_res <- test_tumor_sample_simple(
@@ -140,7 +139,6 @@ test_that("simulation - training - test", {
       c("r_CI_lower", "r_CI_upper", "wildtype_molecules_per_droplet_CI_lower", "wildtype_molecules_per_droplet_CI_upper") %in% colnames(no_CIs_res)
     )
   )
-  expect_snapshot(no_CIs_res)
 
   # Consistent with single tests
   expect_true(all(multiple_test_res[1, ] == positive_test_res))

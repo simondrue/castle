@@ -139,7 +139,6 @@ test_that(
 
     # Dimensions
     expect_equal(nrow(multiple_test_res), 2)
-    expect_snapshot(multiple_test_res)
 
     # Consistent with single tests
     expect_true(all(multiple_test_res[1, ] == positive_test_res))
