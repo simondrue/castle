@@ -81,10 +81,20 @@ import_QS_files <- function(paths,
     setdiff(file_paths)
 
   # Get files
-  load_files_df <- suppressWarnings(read_csv(file_paths, id = "FilePath", show_col_types = FALSE))
+  load_files_df <- suppressWarnings(
+    read_csv(
+      file_paths, id = "FilePath", show_col_types = FALSE,
+      col_types = cols(.default = "?", MergedWells = "c")
+    )
+  )
 
   # Get .csv files from directories
-  load_dirs_df <- suppressWarnings(read_csv(dir_file_paths, id = "FilePath", show_col_types = FALSE))
+  load_dirs_df <- suppressWarnings(
+    read_csv(
+      dir_file_paths, id = "FilePath", show_col_types = FALSE,
+      col_types = cols(.default = "?", MergedWells = "c")
+    )
+  )
 
   # Bind data from dirs and files
   df <- bind_rows(load_files_df, load_dirs_df)
