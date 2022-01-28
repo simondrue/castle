@@ -46,7 +46,7 @@
 #'
 #' @export
 #'
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv cols
 #' @importFrom utils file_test
 #' @import dplyr stringr
 import_QS_files <- function(paths,
