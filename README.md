@@ -4,6 +4,8 @@
 # Welcome to the CASTLE
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/simondrue/castle/workflows/R-CMD-check/badge.svg)](https://github.com/simondrue/castle/actions)
 <!-- badges: end -->
 
 This package is a user friendly implementation of the **CASTLE**
