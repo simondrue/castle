@@ -1,7 +1,7 @@
 Package: castle
 Type: Package
 Title: Fortify your ddPCR analyses for low-frequency variant detection
-Version: 0.1.3
+Version: 0.1.4
 Author: Simon Opstrup Drue 
 Authors@R: 
   c(
