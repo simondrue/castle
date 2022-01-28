@@ -49,21 +49,3 @@
       1                               0.5164573
       2                               0.5010782
 
----
-
-    Code
-      no_CIs_res
-    Output
-        DoubleNegativeDroplets DoublePositiveDroplets WildtypeOnlyDroplets
-      1                   7521                    644                 4889
-      2                   8466                    152                 5252
-        MutantOnlyDroplets mutant_molecules_per_droplet
-      1                946                 0.1006261466
-      2                130                 0.0004842163
-        wildtype_molecules_per_droplet     p_val test_statistic mutation_detected
-      1                      0.5028811 0.0000000   3172.7099905              TRUE
-      2                      0.4877604 0.6735607      0.1774652             FALSE
-        allele_frequency total_mutant_molecules total_wildtype_molecules
-      1     0.1667356131            1408.766052                 7040.335
-      2     0.0009917494               6.779028                 6828.645
-
